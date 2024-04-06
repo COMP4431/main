@@ -58,7 +58,10 @@
                 value = value / 255 * levels;
 
                 // Get the corresponding threshold of the pixel
-                var threshold = matrix[y % 2][x % 2];
+                var row = matrix.shape[1];
+                var coloumn = matrix.shape[0];
+                console.log("row",row, "coloumn",coloumn);
+                var threshold = matrix[y % row][x % coloumn];
 
                 // Set the colour to black or white based on threshold
                 var i = (x + y * outputData.width) * 4;
