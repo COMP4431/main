@@ -133,10 +133,11 @@
             // You will apply thresholding on the grayscale value
            
             // Change the colour to black or white based on the given threshold
-
-            outputData.data[i]     = inputData.data[i] > thresholdValue ? 255 : 0;
-            outputData.data[i + 1] = inputData.data[i + 1]  > thresholdValue ? 255 : 0;
-            outputData.data[i + 2] = inputData.data[i + 2]  > thresholdValue ? 255 : 0;
+            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            var threshold_val = grayscale > thresholdValue ? 255 : 0;
+            outputData.data[i]     = threshold_val;
+            outputData.data[i + 1] = threshold_val;
+            outputData.data[i + 2] = threshold_val;
         }
     }
 
