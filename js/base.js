@@ -48,10 +48,11 @@
 
         for (var i = 0; i < inputData.data.length; i += 4) {
             // Change the RGB components by adding an offset
-
-            outputData.data[i]     = inputData.data[i];
-            outputData.data[i + 1] = inputData.data[i + 1];
-            outputData.data[i + 2] = inputData.data[i + 2];
+            var offset = parseFloat($("#brightness-offset").data);
+            console.log(offset);
+            outputData.data[i]     = inputData.data[i] + offset;
+            outputData.data[i + 1] = inputData.data[i + 1] + offset;
+            outputData.data[i + 2] = inputData.data[i + 2] + offset;
 
             // Handle clipping of the RGB components
         }
