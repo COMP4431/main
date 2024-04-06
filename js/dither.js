@@ -59,7 +59,7 @@
 
                 // Get the corresponding threshold of the pixel
                 var row = matrix.length;
-                var column = matrix[0].length;
+                var coloumn = matrix[0].length;
                 console.log("row",row, "coloumn",coloumn);
                 var threshold = matrix[y % row][x % coloumn];
 
