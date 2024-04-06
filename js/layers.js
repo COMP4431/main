@@ -53,6 +53,8 @@
                 var type = $("#auto-contrast-type").val();
                 var percentage = parseInt($("#auto-contrast-percentage").val()) / 100.0;
                 imageproc.autoContrast(inputImage, outputImage, type, percentage);
+                histogram = buildHistogram(inputData, "gray");
+                console.log(histogram.slice(0, 10).join(","));  
                 break;
         }
     }
