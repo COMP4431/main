@@ -90,11 +90,33 @@
             // then, increase the saturation by the saturation factor
             // ***** beware of the final range of the saturation *****
             // after that, convert it back to RGB
+            var hsv = imageproc.fromRGBToHSV(r, g, b);
+            hsv.s *= saturation;
+            if (hsv.s > 1) { hsv.s = 1; }
+            var rgb = imageproc.fromHSVToRGB(hsv.h, hsv.s, hsv.v);
 
             // Second, based on the saturated colour, find the matching colour
             // from the comic colour palette
             // This is done by finding the minimum distance between the colours
-
+            r = rgb.r;
+            g = rgb.g;
+            b = rgb.b;
+            //initialise the minimum distance to a very large number
+            var minDistance = Number.MAX_VALUE;
+            var minIndex = 0;
+            for (var j = 0; j < palette.length; j++) {
+                var distance = Math.pow(r - palette[j][0], 2) +
+                               Math.pow(g - palette[j][1], 2) +
+                               Math.pow(b - palette[j][2], 2);
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    minIndex = j;
+                }
+            }
+            r = palette[minIndex][0];
+            g = palette[minIndex][1];
+            b = palette[minIndex][2];
+            
             outputData.data[i]     = r;
             outputData.data[i + 1] = g;
             outputData.data[i + 2] = b;
