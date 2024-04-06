@@ -173,6 +173,13 @@
                  * TODO: You need to show the base layer (baseLayer) for
                  * the white pixels (transparent)
                  */
+                for (var i = 0; i < shadeLayer.data.length; i+=4) {
+                    if (shadeLayer.data[i] == 255 && shadeLayer.data[i+1] == 255 && shadeLayer.data[i+2] == 255) {
+                        shadeLayer.data[i] = baseLayer[i];
+                        shadeLayer.data[i+1] = baseLayer[i+1];
+                        shadeLayer.data[i+2] = baseLayer[i+2];
+                    }
+                }
 
             }
         }
