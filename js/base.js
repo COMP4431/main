@@ -28,10 +28,10 @@
             // Find the grayscale value using simple averaging
            
             // Change the RGB components to the resulting value
-
-            outputData.data[i]     = inputData.data[i];
-            outputData.data[i + 1] = inputData.data[i + 1];
-            outputData.data[i + 2] = inputData.data[i + 2];
+            grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            outputData.data[i]     = grayscale;
+            outputData.data[i + 1] = grayscale;
+            outputData.data[i + 2] = grayscale;
         }
     }
 
