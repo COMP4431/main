@@ -28,7 +28,8 @@
             // Find the grayscale value using simple averaging
            
             // Change the RGB components to the resulting value
-            grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            console.log(grayscale);
             outputData.data[i]     = grayscale;
             outputData.data[i + 1] = grayscale;
             outputData.data[i + 2] = grayscale;
