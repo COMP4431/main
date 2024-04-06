@@ -45,11 +45,11 @@
         /**
          * TODO: You need to create the brightness operation here
          */
+        var offset = parseFloat($("#brightness-offset").val());
+        console.log(offset);
 
         for (var i = 0; i < inputData.data.length; i += 4) {
             // Change the RGB components by adding an offset
-            var offset = parseFloat($("#brightness-offset").val());
-            console.log(offset);
             //handle clipping of the RGB components
             for (var j = 0; j<3; j++) {
                 if (inputData.data[i+j] + offset > 255) 
@@ -57,9 +57,9 @@
                 else if (inputData.data[i+j] + offset < 0) 
                     { outputData.data[i+j] = 0; }
                 else { outputData.data[i+j] = inputData.data[i+j] + offset; }
+            }
         }
-    }
-
+    }   
     /*
      * Applying contrast to the input data
      */
@@ -70,9 +70,10 @@
          * TODO: You need to create the brightness operation here
          */
 
+        var contrast_factor = parseFloat($("#contrast-factor").val());
+        console.log(contrast_factor);
+
         for (var i = 0; i < inputData.data.length; i += 4) {
-            var contrast_factor = parseFloat($("#contrast-factor").val());
-            console.log(contrast_factor);
             //handle clipping of the RGB components
             for (var j = 0; j<3; j++) {
                 if (inputData.data[i+j] * contrast_factor > 255) 
