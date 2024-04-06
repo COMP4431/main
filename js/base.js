@@ -29,7 +29,7 @@
            
             // Change the RGB components to the resulting value
             var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
-            console.log(grayscale);
+            //console.log(grayscale);
             outputData.data[i]     = grayscale;
             outputData.data[i + 1] = grayscale;
             outputData.data[i + 2] = grayscale;
@@ -45,8 +45,6 @@
         /**
          * TODO: You need to create the brightness operation here
          */
-        var offset = parseFloat($("#brightness-offset").val());
-        console.log(offset);
 
         for (var i = 0; i < inputData.data.length; i += 4) {
             // Change the RGB components by adding an offset
@@ -70,17 +68,17 @@
          * TODO: You need to create the brightness operation here
          */
 
-        var contrast_factor = parseFloat($("#contrast-factor").val());
-        console.log(contrast_factor);
+        // var contrast_factor = parseFloat($("#contrast-factor").val());
+        // console.log(contrast_factor);
 
         for (var i = 0; i < inputData.data.length; i += 4) {
             //handle clipping of the RGB components
             for (var j = 0; j<3; j++) {
-                if (inputData.data[i+j] * contrast_factor > 255) 
+                if (inputData.data[i+j] * factor > 255) 
                     { outputData.data[i+j] = 255; }
-                else if (inputData.data[i+j] * contrast_factor < 0) 
+                else if (inputData.data[i+j] * factor < 0) 
                     { outputData.data[i+j] = 0; }
-                else { outputData.data[i+j] = inputData.data[i+j] * contrast_factor; }
+                else { outputData.data[i+j] = inputData.data[i+j] * factor; }
         }
         }
     }
@@ -103,7 +101,7 @@
     imageproc.posterization = function(inputData, outputData,
                                        redBits, greenBits, blueBits) {
         console.log("Applying posterization...");
-
+        console.log(redBits, greenBits, blueBits);
         /**
          * TODO: You need to create the posterization operation here
          */
@@ -113,10 +111,10 @@
 
         for (var i = 0; i < inputData.data.length; i += 4) {
             // Apply the bitmasks onto the RGB channels
-
-            outputData.data[i]     = inputData.data[i];
-            outputData.data[i + 1] = inputData.data[i + 1];
-            outputData.data[i + 2] = inputData.data[i + 2];
+            
+            outputData.data[i]     = inputData.data[i] & makeBitMask(redBits);
+            outputData.data[i + 1] = inputData.data[i + 1] & makeBitMask(greenBits);
+            outputData.data[i + 2] = inputData.data[i + 2] & makeBitMask(blueBits); 
         }
     }
 
@@ -136,9 +134,9 @@
            
             // Change the colour to black or white based on the given threshold
 
-            outputData.data[i]     = inputData.data[i];
-            outputData.data[i + 1] = inputData.data[i + 1];
-            outputData.data[i + 2] = inputData.data[i + 2];
+            outputData.data[i]     = inputData.data[i] > thresholdValue ? 255 : 0;
+            outputData.data[i + 1] = inputData.data[i + 1]  > thresholdValue ? 255 : 0;
+            outputData.data[i + 2] = inputData.data[i + 2]  > thresholdValue ? 255 : 0;
         }
     }
 
