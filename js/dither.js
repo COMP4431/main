@@ -58,8 +58,8 @@
                 value = value / 255 * levels;
 
                 // Get the corresponding threshold of the pixel
-                var row = matrix.shape[1];
-                var coloumn = matrix.shape[0];
+                var row = matrix.length;
+                var column = matrix[0].length;
                 console.log("row",row, "coloumn",coloumn);
                 var threshold = matrix[y % row][x % coloumn];
 
