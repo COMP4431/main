@@ -166,8 +166,8 @@
         if (currentShadeLayerOp != "no-op") {
             shadeLayer = imageproc.createBuffer(outputImage);
             applyShadeLayerOp(inputImage, processedImage, shadeLayer);
-            console.log("shadeLayer",shadeLayer.data);
-            console.log("processedImage",processedImage.data);
+            //console.log("shadeLayer",shadeLayer.data);
+            //console.log("processedImage",processedImage.data);
 
             // Show base layer for dithering
             if (currentShadeLayerOp == "dither" &&
@@ -178,12 +178,13 @@
                  * the white pixels (transparent)
                  */
                 for (var i = 0; i < processedImage.data.length; i+=4) {
-                    console.log("processedImage",processedImage.data[i], processedImage.data[i+1])
-                    console.log("shadelayer",shadeLayer.data[i], shadeLayer.data[i+1])
+                    //console.log("processedImage",processedImage.data[i], processedImage.data[i+1])
+                    //console.log("shadelayer",shadeLayer.data[i], shadeLayer.data[i+1])
                     if (shadeLayer.data[i] == 255 && shadeLayer.data[i+1] == 255 && shadeLayer.data[i+2] == 255) {
-                        shadeLayer.data[i] = baseLayer[i];
-                        shadeLayer.data[i+1] = baseLayer[i+1];
-                        shadeLayer.data[i+2] = baseLayer[i+2];
+                        shadeLayer.data[i] = baseLayer.data[i];
+                        shadeLayer.data[i+1] = baseLayer.data[i+1];
+                        shadeLayer.data[i+2] = baseLayer.data[i+2];
+                        //shadeLayer.data[i+3] = baseLayer.data[i+3];
                     }
                 }
 
