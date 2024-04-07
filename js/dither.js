@@ -55,7 +55,7 @@
         // The following code uses Bayer's 2x2 matrix to create the
         // dithering effect. You need to extend it to work for different
         // matrix types
-
+        console.log("matrix",matrix);
         for (var y = 0; y < inputData.height; y++) {
             for (var x = 0; x < inputData.width; x++) {
                 var pixel = imageproc.getPixel(inputData, x, y);

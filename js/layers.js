@@ -177,7 +177,7 @@
                  * TODO: You need to show the base layer (baseLayer) for
                  * the white pixels (transparent)
                  */
-                for (var i = 0; i < processedImage.data.length/100; i+=4) {
+                for (var i = 0; i < processedImage.data.length; i+=4) {
                     console.log("processedImage",processedImage.data[i], processedImage.data[i+1])
                     console.log("shadelayer",processedImage.data[i], processedImage.data[i+1])
                     if (shadeLayer.data[i] == 255 && shadeLayer.data[i+1] == 255 && shadeLayer.data[i+2] == 255) {
