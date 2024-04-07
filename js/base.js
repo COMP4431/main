@@ -28,7 +28,7 @@
             // Find the grayscale value using simple averaging
            
             // Change the RGB components to the resulting value
-            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            var grayscale = Math.round((inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3);
             //console.log(grayscale);
             outputData.data[i]     = grayscale;
             outputData.data[i + 1] = grayscale;
@@ -133,7 +133,7 @@
             // You will apply thresholding on the grayscale value
            
             // Change the colour to black or white based on the given threshold
-            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            var grayscale = Math.round((inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3);
             var threshold_val = grayscale > thresholdValue ? 255 : 0;
             outputData.data[i]     = threshold_val;
             outputData.data[i + 1] = threshold_val;
@@ -179,7 +179,7 @@
                 break;
             case "gray":
                 for (var i = 0; i < inputData.data.length; i += 4) {
-                    var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+                    var grayscale = math.round((inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3);
                     histogram[grayscale]++;
                 }
                 break;
@@ -249,8 +249,9 @@
             console.log("factor",factor);
             for (var i = 0; i < inputData.data.length; i += 4) {
             // Adjust each pixel based on the minimum and maximum values
-            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            var grayscale = Math.round((inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3);
             var adjusted = ((grayscale - min) * factor);
+            adjusted = adjusted < 0 ? 0 : adjusted > 255 ? 255 : adjusted;
             outputData.data[i] = adjusted;
             outputData.data[i + 1] = adjusted;
             outputData.data[i + 2] = adjusted;
@@ -279,7 +280,6 @@
                     adjusted = adjusted < 0 ? 0 : adjusted > 255 ? 255 : adjusted; 
                     outputData.data[i + color_offset] = adjusted;
                 }
-                color_offset++;
             });
             for (let i = 3; i < inputData.data.length; i += 4) {
                 outputData.data[i] = inputData.data[i];
