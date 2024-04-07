@@ -180,7 +180,7 @@
                 for (var i = 0; i < processedImage.data.length/100; i+=4) {
                     console.log("processedImage",processedImage.data[i], processedImage.data[i+1])
                     console.log("shadelayer",processedImage.data[i], processedImage.data[i+1])
-                    if (shadeLayer.data[i] == 1 && shadeLayer.data[i+1] == 1 && shadeLayer.data[i+2] == 1) {
+                    if (shadeLayer.data[i] == 255 && shadeLayer.data[i+1] == 255 && shadeLayer.data[i+2] == 255) {
                         shadeLayer.data[i] = baseLayer[i];
                         shadeLayer.data[i+1] = baseLayer[i+1];
                         shadeLayer.data[i+2] = baseLayer[i+2];
