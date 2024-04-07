@@ -220,7 +220,7 @@
             else
                 accumulated += histogram[max];
         }
-        
+
         console.log("min",min, "max",max);
         return {"min": min, "max": max};
     }
@@ -247,13 +247,26 @@
             /**
              * TODO: You need to apply the correct adjustment to each pixel
              */
-
+            var factor = 1/range*255;
+            console.log("factor",factor);
             for (var i = 0; i < inputData.data.length; i += 4) {
-                // Adjust each pixel based on the minimum and maximum values
-
-                outputData.data[i]     = inputData.data[i];
-                outputData.data[i + 1] = inputData.data[i + 1];
-                outputData.data[i + 2] = inputData.data[i + 2];
+            // Adjust each pixel based on the minimum and maximum values
+            var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
+            if (grayscale - min < 0) {
+                outputData.data[i] = 0;
+                outputData.data[i + 1] = 0;
+                outputData.data[i + 2] = 0;
+            }
+            else if (grayscale - max > 0) {
+                outputData.data[i] = 255;
+                outputData.data[i + 1] = 255;
+                outputData.data[i + 2] = 255;
+            }
+            else { 
+                outputData.data[i] = (grayscale - min) * factor;
+                outputData.data[i + 1] = (grayscale - min) * factor;
+                outputData.data[i + 2] = (grayscale - min) * factor;
+            }
             }
         }
         else {
@@ -262,15 +275,31 @@
              * TODO: You need to apply the same procedure for each RGB channel
              *       based on what you have done for the grayscale version
              */
+            var color_offset = 0;
+            for (var channel in ["red", "green", "blue"]) {
+                histogram = buildHistogram(inputData, channel);
 
-            for (var i = 0; i < inputData.data.length; i += 4) {
-                // Adjust each channel based on the histogram of each one
+                minMax = findMinMax(histogram, pixelsToIgnore);
 
-                outputData.data[i]     = inputData.data[i];
-                outputData.data[i + 1] = inputData.data[i + 1];
-                outputData.data[i + 2] = inputData.data[i + 2];
+                var min = minMax.min, max = minMax.max, range = max - min;
+
+                // Apply the adjustment to each pixel in the current channel
+                var factor = 1 / range * 255;
+                for (var i = 0; i < inputData.data.length; i += 4) {
+                    if (grayscale - min < 0) {
+                        outputData.data[i+color_offset] = 0;
+                    }
+                    else if (grayscale - max > 0) {
+                        outputData.data[i+color_offset] = 255;
+                    }
+                    else {
+                        outputData.data[i+color_offset] = (inputData.data[i] - min) * factor;
+                    }
+                }
+                color_offset++;
             }
         }
-    }
+
+        }
 
 }(window.imageproc = window.imageproc || {}));
