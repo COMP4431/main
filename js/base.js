@@ -160,6 +160,7 @@
         // "blue"  - building a histogram for the blue component
         // "gray"  - building a histogram for the intensity
         //           (using simple averaging)
+        console.log("channel:",channel);
         switch (channel) {
             case "red":
                 for (var i = 0; i < inputData.data.length; i += 4) {
@@ -186,7 +187,7 @@
                 console.log("Invalid channel");
                 return;
         }
-
+        console.log(histogram);
         return histogram;
     }
 
