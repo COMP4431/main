@@ -250,21 +250,11 @@
             for (var i = 0; i < inputData.data.length; i += 4) {
             // Adjust each pixel based on the minimum and maximum values
             var grayscale = (inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3;
-            if (grayscale - min < 0) {
-                outputData.data[i] = 0;
-                outputData.data[i + 1] = 0;
-                outputData.data[i + 2] = 0;
-            }
-            else if (grayscale - max > 0) {
-                outputData.data[i] = 255;
-                outputData.data[i + 1] = 255;
-                outputData.data[i + 2] = 255;
-            }
-            else { 
-                outputData.data[i] = (grayscale - min) * factor;
-                outputData.data[i + 1] = (grayscale - min) * factor;
-                outputData.data[i + 2] = (grayscale - min) * factor;
-            }
+            var adjusted = ((grayscale - min) * factor);
+            outputData.data[i] = adjusted;
+            outputData.data[i + 1] = adjusted;
+            outputData.data[i + 2] = adjusted;
+            outputData.data[i + 3] = inputData.data[i + 3];
             }
         }
         else {
@@ -273,8 +263,8 @@
              * TODO: You need to apply the same procedure for each RGB channel
              *       based on what you have done for the grayscale version
              */
-            var color_offset = 0;
-            for (var channel in ["red", "green", "blue"]) {
+
+            ["red", "green", "blue"].forEach((channel, color_offset) =>  {
                 histogram = buildHistogram(inputData, channel);
 
                 minMax = findMinMax(histogram, pixelsToIgnore);
@@ -284,20 +274,18 @@
                 // Apply the adjustment to each pixel in the current channel
                 var factor = 1 / range * 255;
                 for (var i = 0; i < inputData.data.length; i += 4) {
-                    if (grayscale - min < 0) {
-                        outputData.data[i+color_offset] = 0;
-                    }
-                    else if (grayscale - max > 0) {
-                        outputData.data[i+color_offset] = 255;
-                    }
-                    else {
-                        outputData.data[i+color_offset] = (inputData.data[i] - min) * factor;
-                    }
+                    var value = inputData.data[i + offset];
+                    var adjusted = ((value - min) * factor); 
+                    adjusted = adjusted < 0 ? 0 : adjusted > 255 ? 255 : adjusted; 
+                    outputData.data[i + offset] = adjusted;
                 }
                 color_offset++;
+            });
+            for (let i = 3; i < inputData.data.length; i += 4) {
+                outputData.data[i] = inputData.data[i];
             }
-        }
 
         }
+    }
 
 }(window.imageproc = window.imageproc || {}));
