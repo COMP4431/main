@@ -250,11 +250,12 @@
             for (var i = 0; i < inputData.data.length; i += 4) {
             // Adjust each pixel based on the minimum and maximum values
             var grayscale = Math.round((inputData.data[i] + inputData.data[i + 1] + inputData.data[i + 2]) / 3);
-            var adjusted = ((grayscale - min) * factor);
-            adjusted = adjusted < 0 ? 0 : adjusted > 255 ? 255 : adjusted;
-            outputData.data[i] = adjusted;
-            outputData.data[i + 1] = adjusted;
-            outputData.data[i + 2] = adjusted;
+            var red_adjusted = ((inputData[i] - min) * factor);
+            outputData.data[i] = red_adjusted < 0 ? 0 : red_adjusted > 255 ? 255 : red_adjusted;
+            var green_adjusted = ((inputData[i+1] - min) * factor);
+            outputData.data[i+1] = green_adjusted < 0 ? 0 : green_adjusted > 255 ? 255 : green_adjusted;
+            var blue_adjusted = ((inputData[i+2] - min) * factor);
+            outputData.data[i+2] = blue_adjusted < 0 ? 0 : blue_adjusted > 255 ? 255 : blue_adjusted;
             outputData.data[i + 3] = inputData.data[i + 3];
             }
         }
