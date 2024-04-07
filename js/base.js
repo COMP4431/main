@@ -203,10 +203,25 @@
 
         // Find the minimum in the histogram with non-zero value by
         // ignoring the number of pixels given by pixelsToIgnore
-       
+        var accumulated = 0;
+        for (min = 0; min < 255; min++) {
+            if (accumulated + histogram[min] > pixelsToIgnore)
+                break;
+            else
+                accumulated += histogram[min];
+        }
+
         // Find the maximum in the histogram with non-zero value by
         // ignoring the number of pixels given by pixelsToIgnore
+        var accumulated_2 = 0;
+        for (max = 255; max > 0; max--) {
+            if ( accumulated_2 + histogram[max] > pixelsToIgnore)
+                break;
+            else
+                accumulated += histogram[max];
+        }
         
+        console.log("min",min, "max",max);
         return {"min": min, "max": max};
     }
 
