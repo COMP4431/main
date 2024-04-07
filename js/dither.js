@@ -72,8 +72,8 @@
 
                 // Set the colour to black or white based on threshold
                 var i = (x + y * outputData.width) * 4;
-                outputData.data[i]     =
-                outputData.data[i + 1] =
+                outputData.data[i]     = (value < threshold)? 0 : 255
+                outputData.data[i + 1] = (value < threshold)? 0 : 255
                 outputData.data[i + 2] = (value < threshold)? 0 : 255;
             }
         }
