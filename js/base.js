@@ -218,7 +218,7 @@
             if ( accumulated_2 + histogram[max] > pixelsToIgnore)
                 break;
             else
-                accumulated += histogram[max];
+                accumulated_2 += histogram[max];
         }
 
         console.log("min",min, "max",max);
