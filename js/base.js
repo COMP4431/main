@@ -274,10 +274,10 @@
                 // Apply the adjustment to each pixel in the current channel
                 var factor = 1 / range * 255;
                 for (var i = 0; i < inputData.data.length; i += 4) {
-                    var value = inputData.data[i + offset];
+                    var value = inputData.data[i + color_offset];
                     var adjusted = ((value - min) * factor); 
                     adjusted = adjusted < 0 ? 0 : adjusted > 255 ? 255 : adjusted; 
-                    outputData.data[i + offset] = adjusted;
+                    outputData.data[i + color_offset] = adjusted;
                 }
                 color_offset++;
             });
