@@ -30,7 +30,7 @@
             break;
 
             case "line":
-            matrix = [[15,15,15,2],
+            matrix = [[15,15,15,25],
                       [15,15,25,15],
                       [15,25,15,15],
                       [25,15,15,15]];
@@ -39,10 +39,10 @@
             case "diamond":
             // The original matrix values are mapped to their corresponding levels
             matrix = [
-                [15, 15, 10, 15],
-                [15, 10, 5, 10],
-                [10, 5, 5, 5],
-                [15, 10, 5, 10]
+                [15, 15, 25, 15],
+                [15, 25, 15, 25],
+                [25, 15, 15, 15],
+                [15, 25, 15, 25]
             ];
             levels = 100;
             break;
