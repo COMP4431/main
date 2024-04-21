@@ -6,7 +6,7 @@
      */
     imageproc.kuwahara = function(inputData, outputData, size) {
         console.log("Applying Kuwahara filter...");
-
+        console.log("size:",size)
         /*
          * TODO: You need to extend the kuwahara function to include different
          * sizes of the filter
