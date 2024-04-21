@@ -203,14 +203,28 @@
                  * the non-edge pixels (transparent)
                  */
                 var isFlip = $("#sobel-flip").prop("checked");
+                // for (var i = 0; i < outlineLayer.data.length; i += 4) {
+                //     var shouldCopy = (isFlip && outlineLayer.data[i] == 0 && outlineLayer.data[i + 1] == 0 && outlineLayer.data[i + 2] == 0) ||
+                //                      (!isFlip && outlineLayer.data[i] == 255 && outlineLayer.data[i + 1] == 255 && outlineLayer.data[i + 2] == 255);
+                //     if (shouldCopy) {
+                //         outlineLayer.data[i] = shadeLayer.data[i];
+                //         outlineLayer.data[i + 1] = shadeLayer.data[i + 1];
+                //         outlineLayer.data[i + 2] = shadeLayer.data[i + 2];
+                //         outlineLayer.data[i + 3] = shadeLayer.data[i + 3]; 
+                //     }
+                // }
                 for (var i = 0; i < outlineLayer.data.length; i += 4) {
-                    var shouldCopy = (isFlip && outlineLayer.data[i] == 0 && outlineLayer.data[i + 1] == 0 && outlineLayer.data[i + 2] == 0) ||
-                                     (!isFlip && outlineLayer.data[i] == 255 && outlineLayer.data[i + 1] == 255 && outlineLayer.data[i + 2] == 255);
-                    if (shouldCopy) {
-                        outlineLayer.data[i] = shadeLayer.data[i];
-                        outlineLayer.data[i + 1] = shadeLayer.data[i + 1];
-                        outlineLayer.data[i + 2] = shadeLayer.data[i + 2];
-                        outlineLayer.data[i + 3] = shadeLayer.data[i + 3]; 
+                    // Determine if the current pixel is an edge pixel
+                    var isEdgePixel = (isFlip && outlineLayer.data[i] == 0 && outlineLayer.data[i + 1] == 0 && outlineLayer.data[i + 2] == 0) ||
+                                      (!isFlip && outlineLayer.data[i] == 255 && outlineLayer.data[i + 1] == 255 && outlineLayer.data[i + 2] == 255);
+        
+                    // If it's not an edge pixel, make it transparent by setting the alpha to 0
+                    if (!isEdgePixel) {
+                        outlineLayer.data[i + 3] = 0; // Make non-edge pixel transparent
+                    }
+                    // Otherwise, leave it as it is (the Sobel filter result), which should be fully opaque
+                    else {
+                        outlineLayer.data[i + 3] = 255; // Keep edge pixel opaque
                     }
                 }
             }
