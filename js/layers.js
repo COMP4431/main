@@ -198,11 +198,17 @@
             // Show shade layer for non-edge pixels
             if (currentOutlineLayerOp == "sobel" &&
                 $("#sobel-transparent").prop("checked")) {
-
                 /**
                  * TODO: You need to show the shade layer (shadeLayer) for
                  * the non-edge pixels (transparent)
                  */
+                if ($("#sobel-flip").prop("checked")){
+
+                }
+                else{
+                    
+                }
+
 
             }
         }
