@@ -37,12 +37,30 @@
             levels = 20;
             break;
             case "diamond":
-            matrix = [[ 3,3,5,3,3],
-                      [3,5,3,5,3],
-                      [5,3,1,3,5],
-                      [3,5,3,5,3 ]
-                      [3,3,5,3,3]];
-            levels = 16;
+            // The original matrix values are mapped to their corresponding levels
+            matrix = [
+                [3, 3, 1, 3],
+                [3, 1, 2, 1],
+                [1, 2, 2, 2],
+                [3, 1, 2, 1]
+            ];
+            // Now we need to map the original matrix values to the correct levels
+            // Black (1) => 0 to 15, Pattern (2) => 16 to 25, White (3) => 26 to 100
+            for (var i = 0; i < matrix.length; i++) {
+                for (var j = 0; j < matrix[i].length; j++) {
+                    if (matrix[i][j] === 1) {
+                        // Map to black
+                        matrix[i][j] = Math.round(15);
+                    } else if (matrix[i][j] === 2) {
+                        // Map to pattern
+                        matrix[i][j] = Math.round((16 + 25) / 2);
+                    } else {
+                        // Map to white
+                        matrix[i][j] = Math.round((26 + 100) / 2);
+                    }
+                }
+            }
+            levels = 100;
             break;
 
             default:
