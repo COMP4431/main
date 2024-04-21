@@ -14,16 +14,35 @@
          * You need to clearly understand the following code to make
          * appropriate changes
          */
+        var subRegionSize;
+        switch (size) {
+            case 5:
+                subRegionSize = 3;
+                break;
+            case 9:
+                subRegionSize = 5;
+                break;
+            case 13:
+                subRegionSize = 7;
+                break;
+            default:
+                console.log("Invalid filter size");
+                return;
+        }
 
         /*
          * An internal function to find the regional stat centred at (x, y)
          */
-        function regionStat(x, y) {
+        function regionStat(x, y, subRegionSize) {
             // Find the mean colour and brightness
             var meanR = 0, meanG = 0, meanB = 0;
             var meanValue = 0;
-            for (var j = -1; j <= 1; j++) {
-                for (var i = -1; i <= 1; i++) {
+            var variance = 0;
+            var count = 0;
+            var halfSize = Math.floor(subRegionSize / 2);
+
+            for (var j = -halfSize; j <= halfSize; j++) {
+                for (var i = -halfSize; i <= halfSize; i++) {
                     var pixel = imageproc.getPixel(inputData, x + i, y + j);
 
                     // For the mean colour
@@ -33,24 +52,25 @@
 
                     // For the mean brightness
                     meanValue += (pixel.r + pixel.g + pixel.b) / 3;
+                    count++;
                 }
             }
-            meanR /= 9;
-            meanG /= 9;
-            meanB /= 9;
-            meanValue /= 9;
+            meanR /= count;
+            meanG /= count;
+            meanB /= count;
+            meanValue /= count;
 
             // Find the variance
             var variance = 0;
-            for (var j = -1; j <= 1; j++) {
-                for (var i = -1; i <= 1; i++) {
+            for (var j = -halfSize; j <= halfSize; j++) {
+                for (var i = -halfSize; i <= halfSize; i++) {
                     var pixel = imageproc.getPixel(inputData, x + i, y + j);
                     var value = (pixel.r + pixel.g + pixel.b) / 3;
 
                     variance += Math.pow(value - meanValue, 2);
                 }
             }
-            variance /= 9;
+            variance /= count;
 
             // Return the mean and variance as an object
             return {
