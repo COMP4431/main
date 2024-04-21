@@ -87,8 +87,8 @@
                 
                 var i = (x + y * outputData.width) * 4;
                 outputData.data[i]     = redSum/divisor;
-                outputData.data[i + 1] = greenSum[i + 1]/divisor;
-                outputData.data[i + 2] = blueSum[i + 2]/divisor;
+                outputData.data[i + 1] = greenSum/divisor;
+                outputData.data[i + 2] = blueSum/divisor;
             }
         }
     } 
