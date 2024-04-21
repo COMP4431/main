@@ -204,8 +204,8 @@
                  */
                 var isFlip = $("#sobel-flip").prop("checked");
                 for (var i = 0; i < processedImage.data.length; i += 4) {
-                    var shouldCopy = (isFlip && outlineLayer.data[i] == 0 && outlineLayer.data[i + 1] == 0 && outlineLayer.data[i + 2] == 0) ||
-                                     (!isFlip && outlineLayer.data[i] == 255 && outlineLayer.data[i + 1] == 255 && outlineLayer.data[i + 2] == 255);
+                    var shouldCopy = (!isFlip && outlineLayer.data[i] == 0 && outlineLayer.data[i + 1] == 0 && outlineLayer.data[i + 2] == 0) ||
+                                     (isFlip && outlineLayer.data[i] == 255 && outlineLayer.data[i + 1] == 255 && outlineLayer.data[i + 2] == 255);
                     if (shouldCopy) {
                         outlineLayer.data[i] = baseLayer.data[i];
                         outlineLayer.data[i + 1] = baseLayer.data[i + 1];
