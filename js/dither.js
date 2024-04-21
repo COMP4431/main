@@ -39,10 +39,10 @@
             case "diamond":
             // The original matrix values are mapped to their corresponding levels
             matrix = [
-                [15, 15, 5, 15],
-                [15, 5, 10, 5],
-                [5, 10, 10, 10],
-                [15, 5, 10, 5]
+                [15, 15, 10, 15],
+                [15, 10, 5, 10],
+                [10, 5, 5, 5],
+                [15, 10, 5, 10]
             ];
             levels = 100;
             break;
