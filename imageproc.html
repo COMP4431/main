@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="bootstrap/bootstrap4-toggle.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
-    <title>COMP4431 Multimedia Computing - Image Processor</title>
+    <title>COMP4431 Multimedia Computing - Mini Project</title>
 
     <style>
     body { min-width: 1020px; }
@@ -22,7 +22,7 @@
 <body>
     <nav class="navbar navbar-dark bg-dark navbar-fixed-top">
         <div class="navbar-header">
-            <span class="navbar-brand">Image Processor</span>
+            <span class="navbar-brand">Mini Project</span>
         </div>
     </nav>
 
@@ -100,6 +100,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#no-op"><i>Do Nothing</i></a></li>
                             <li><a class="dropdown-item" href="#dither">Ordered Dithering</a></li>
+                            <li><a class="dropdown-item" href="#error-dither">Error Dithering</a></li>
                         </ul>
                     </li>
 
@@ -112,7 +113,6 @@
                             <li><a class="dropdown-item" href="#sobel">Sobel Edge</a></li>
                         </ul>
                     </li>
-
                 </ul>
 
                 <!-- Tab panes -->
@@ -355,6 +355,41 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Error dithering -->
+                    <div class="tab-pane" id="error-dither">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-3">
+                                    <label for="dither-input2">Color Channel:</label>
+                                    <select class="custom-select" id="dither-input2">
+                                        <!-- <option value="processed">GrayScale</option>
+                                        <option value="individual color">Individual Color</option> -->
+                                        <option value="original">Original Image</option>
+                                        <option value="processed">Processed Image</option>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <label for="dither-method">Dithering Method:</label>
+                                    <select class="custom-select" id="dither-method">
+                                        <option value="Floyd-Steinberg">Floyd-Steinberg Dithering</option>
+                                        <option value="Jarvis">Jarvis Dithering</option>
+                                        <option value="Judice">Judice Dithering</option>
+                                        <option value="Ninke">Ninke Dithering</option>
+                                        <option value="Stucki">Stucki Dithering</option>
+                                        
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <label for="dither-transparent">White shown as transparent:</label>
+                                    <div class="input-group">
+                                        <input class="form-control toggle-control" id="dither-transparent" type="checkbox" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <!-- Sobel edge -->
                     <div class="tab-pane" id="sobel">
@@ -432,5 +467,6 @@
     <script src="js/outline.js"></script>
     <script src="js/main.js"></script>
     <script src="js/layers.js"></script>
+    <script src="js/error_dither.js"></script>
 </body>
 </html>
