@@ -189,3 +189,32 @@ $(document).ready(function() {
     });
 
 });
+
+// for the custom image upload
+function loadImage() {
+    const input = document.getElementById('upload-image');
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.getElementById('input');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert("Please select a file to upload.");
+    }
+}
+
+// Update file input label after file selection
+document.getElementById('upload-image').addEventListener('change', function(e) {
+    const fileName = e.target.files[0].name;
+    const nextSibling = e.target.nextElementSibling;
+    nextSibling.innerText = fileName;
+});
