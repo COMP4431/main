@@ -1,2 +1,3 @@
-# Comp4431_lab5
-lab5 to lab 7
+# Comp4431 Mini Project
+Image 2: Error dithering
+Tung Chuen Yuet, Lam Sum Yin
