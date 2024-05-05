@@ -17,6 +17,13 @@
     .nav-tabs, .nav-tabs .dropdown-item { font-size: 14px; }
     .toggle { height: 38px !important; }
     canvas { border: 1px solid black; }
+    .dither-input-box {
+        width: 40px; /* Set width to 30px */
+        height: 40px; /* Set height to 30px to maintain square shape */
+    }
+    .custom-row {
+    margin-bottom: 10px;
+}
     </style>
 </head>
 <body>
@@ -83,7 +90,7 @@
                     </li>
 
                     <!-- Base layer -->
-                    <li class="nav-item dropdown" id="base-dropdown">
+                    <!-- <li class="nav-item dropdown" id="base-dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Base Layer<br><span class="title"><i>Do Nothing</i></span>
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
@@ -91,11 +98,11 @@
                             <li><a class="dropdown-item" href="#blur">Blur</a></li>
                             <li><a class="dropdown-item" href="#kuwahara">Kuwahara Filter</a></li>
                         </ul>
-                    </li>
+                    </li> -->
 
                     <!-- Shade layer -->
                     <li class="nav-item dropdown" id="shade-dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Shade Layer<br><span class="title"><i>Do Nothing</i></span>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Error Dithering<br><span class="title"><i>Do Nothing</i></span>
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#no-op"><i>Do Nothing</i></a></li>
@@ -104,7 +111,7 @@
                         </ul>
                     </li>
 
-                    <!-- Outline layer -->
+                    <!-- Outline layer
                     <li class="nav-item dropdown" id="outline-dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Outline Layer<br><span class="title"><i>Do Nothing</i></span>
                         <span class="caret"></span></a>
@@ -112,7 +119,7 @@
                             <li><a class="dropdown-item" href="#no-op"><i>Do Nothing</i></a></li>
                             <li><a class="dropdown-item" href="#sobel">Sobel Edge</a></li>
                         </ul>
-                    </li>
+                    </li> -->
                 </ul>
 
                 <!-- Tab panes -->
@@ -275,7 +282,7 @@
                     </div>
 
                     <!-- Blur -->
-                    <div class="tab-pane" id="blur">
+                    <!-- <div class="tab-pane" id="blur">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-3">
@@ -299,8 +306,8 @@
                         </div>
                     </div>
 
-                    <!-- Kuwahara filter -->
-                    <div class="tab-pane" id="kuwahara">
+                    Kuwahara filter -->
+                    <!-- <div class="tab-pane" id="kuwahara">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-3">
@@ -324,7 +331,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Ordered dithering -->
                     <div class="tab-pane" id="dither">
@@ -361,12 +368,19 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-3">
-                                    <label for="dither-input2">Color Channel:</label>
+                                    <label for="dither-input2">Input:</label>
                                     <select class="custom-select" id="dither-input2">
                                         <!-- <option value="processed">GrayScale</option>
                                         <option value="individual color">Individual Color</option> -->
                                         <option value="original">Original Image</option>
                                         <option value="processed">Processed Image</option>
+                                    </select>
+                                </div>
+                                <div class="col-3">
+                                    <label for="color-channel">Color Channel:</label>
+                                    <select class="custom-select" id="color-channel">
+                                        <option value="grayscale">GrayScale</option>
+                                        <option value="individualColor">Individual Color</option>
                                     </select>
                                 </div>
                                 <div class="col-3">
@@ -377,22 +391,35 @@
                                         <option value="Judice">Judice Dithering</option>
                                         <option value="Ninke">Ninke Dithering</option>
                                         <option value="Stucki">Stucki Dithering</option>
-                                        
+                                        <option value="Customized">Customized Dithering</option>
                                     </select>
                                 </div>
-                                <div class="col-3">
-                                    <label for="dither-transparent">White shown as transparent:</label>
-                                    <div class="input-group">
-                                        <input class="form-control toggle-control" id="dither-transparent" type="checkbox" />
-                                    </div>
+                                <div class= "col-3">
+                                    <label for="color-system-selection">Color System Selection:</label>
+                                    <select class="custom-select" id="color-system-selection">
+                                        <option value="rgb">RGB</option>
+                                        <option value="hsi">HSI</option>
+                                        <option value="cym">CYM</option>
+                                    </select>
                                 </div>
+                                <div class="col-3" style="display:none;" id="custom-dither-controls">
+                                    <label for="cols">Columns:</label>
+                                    <input type="number" id="cols" class="form-control">
+                                    <label for="rows">Rows:</label>
+                                    <input type="number" id="rows" class="form-control">
+                                    <button id="generate-matrix" class="btn btn-primary mt-2">Generate Matrix</button>
+                                </div>
+                                <div class="col-12">
+                                    <div id="custom-dither-matrix" class="container-fluid"></div>
+                                </div>
+                                <div id="error-message" class="alert alert-danger" style="display:none;"></div>
                             </div>
                         </div>
                     </div>
 
 
                     <!-- Sobel edge -->
-                    <div class="tab-pane" id="sobel">
+                    <!-- <div class="tab-pane" id="sobel">
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-3">
@@ -445,7 +472,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                 </div>
             </div>
@@ -468,5 +495,51 @@
     <script src="js/main.js"></script>
     <script src="js/layers.js"></script>
     <script src="js/error_dither.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initially hide the color system selection dropdown
+            $('#color-system-selection').parent().hide();
+        
+            // Function to toggle the visibility based on the color channel selection
+            $('#color-channel').on('change', function() {
+                if ($(this).val() == 'individualColor') {
+                    // Show the color system selection dropdown
+                    $('#color-system-selection').parent().show();
+                } else {
+                    // Hide the color system selection dropdown
+                    $('#color-system-selection').parent().hide();
+                }
+            });
+        });
+        $(document).ready(function() {
+            $('#dither-method').change(function() {
+                if ($(this).val() == "Customized") {
+                    $('#custom-dither-controls').show();
+                } else {
+                    $('#custom-dither-controls').hide();
+                    $('#custom-dither-matrix').empty();
+                }
+            });
+
+            $('#generate-matrix').click(function() {
+                const cols = parseInt($('#cols').val());
+                const rows = parseInt($('#rows').val());
+                const container = $('#custom-dither-matrix');
+                container.empty(); // Clear previous entries
+
+                if (isNaN(cols) || isNaN(rows) || cols < 1 || rows < 1 || cols > 15 || rows > 15) {
+                    $('#error-message').text('Please enter column and row numbers between 1 and 15.').show();
+                    return;
+                }
+                for (let r = 0; r < rows; r++) {
+                    const row = $('<div class="row custom-row justify-content-start"></div>');
+                    for (let c = 0; c < cols; c++) {
+                        row.append('<div class="col-auto px-1"><input type="text" class="form-control dither-input-box"></div>');
+                    }
+                    container.append(row);
+                }
+            });
+        });
+        </script>
 </body>
 </html>

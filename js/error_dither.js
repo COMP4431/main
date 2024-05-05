@@ -1,7 +1,7 @@
     (function(imageproc) {
         "use strict";
 
-        imageproc.errorDither = function(inputData, outputData, ditherMethod) {
+        imageproc.errorDither = function(inputData, outputData, colorChannel,ditherMethod) {
             console.log("Applying error dithering...", ditherMethod);
 
             var errorDiffusionMatrix;
