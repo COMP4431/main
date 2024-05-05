@@ -1,3 +1,8 @@
+// Check for the various File API support.
+if (!(window.File && window.FileReader && window.FileList && window.Blob && Array.prototype.indexOf)) {
+    alert("Your browser does not support all features that are needed in this assignment!\nPlease use another browser, e.g. Google Chrome.");
+    throw("Your browser does not support all features that are needed in this assignment!\nPlease use another browser, e.g. Google Chrome.");
+}
 
 // Currently selected basic operation
 var currentBasicOp = "no-op";
