@@ -34,15 +34,15 @@ function showTab(e) {
         case "basic-dropdown":
             target = target.find("ul li a[href='#" + currentBasicOp + "']");
             break;
-        case "base-dropdown":
-            target = target.find("ul li a[href='#" + currentBaseLayerOp + "']");
-            break;
+        // case "base-dropdown":
+        //     target = target.find("ul li a[href='#" + currentBaseLayerOp + "']");
+        //     break;
         case "shade-dropdown":
             target = target.find("ul li a[href='#" + currentShadeLayerOp + "']");
             break;
-        case "outline-dropdown":
-            target = target.find("ul li a[href='#" + currentOutlineLayerOp + "']");
-            break;
+        // case "outline-dropdown":
+        //     target = target.find("ul li a[href='#" + currentOutlineLayerOp + "']");
+        //     break;
     }
 
     // Show the tab and make the tab active
