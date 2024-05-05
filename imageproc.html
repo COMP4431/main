@@ -22,8 +22,19 @@
         height: 50px; /* Set height to 30px to maintain square shape */
     }
     .custom-row {
-    margin-bottom: 10px;
-}
+        margin-bottom: 10px;
+    }
+    #multiple-outputs > div {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    #multiple-outputs > div > div {
+        flex: 50%; /* Each box takes up half the width of the parent, forming a 2x2 grid */
+        padding: 10px; /* Padding for spacing */
+        box-sizing: border-box; /* Includes padding in width calculation */
+    }
     </style>
 </head>
 <body>
@@ -58,9 +69,24 @@
             </div>
             <div class="col-6">
                 <h5>Output Image</h5>
-                <canvas id="output" width="480" height="360"></canvas>
+                <canvas id="output" width="480" height="360" style="display: block;"></canvas>
                 <div class="form-inline">
                     <button id="output-update" class="btn btn-info"><i class="fas fa-sync"></i> Update Output</button>
+                </div>
+                <div id="multiple-outputs" style="display: none;">
+                    <div class="canvas-grid">
+                        <canvas id="output1" width="240" height="180"></canvas>
+                        <canvas id="output2" width="240" height="180"></canvas>
+                        <canvas id="output3" width="240" height="180"></canvas>
+                        <canvas id="output4" width="240" height="180"></canvas>
+                    </div>
+                </div>
+                <div id="multiple-button" class="form-inline" style="display: none;">
+                    <button id="output-update-1" class="btn btn-info"><i class="fas fa-sync"></i> Update 1</button>
+                    <button id="output-update-2" class="btn btn-info"><i class="fas fa-sync"></i> Update 2</button>
+                    <button id="output-update-3" class="btn btn-info"><i class="fas fa-sync"></i> Update 3</button>
+                    <button id="output-update-4" class="btn btn-info"><i class="fas fa-sync"></i> Update 4</button>
+                    <button id="toggle-view" class="btn btn-secondary"><i class="fas fa-exchange-alt"></i> Toggle Multiple View</button>
                 </div>
             </div>
         </div>
@@ -495,51 +521,5 @@
     <script src="js/main.js"></script>
     <script src="js/layers.js"></script>
     <script src="js/error_dither.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Initially hide the color system selection dropdown
-            $('#color-system-selection').parent().hide();
-        
-            // Function to toggle the visibility based on the color channel selection
-            $('#color-channel').on('change', function() {
-                if ($(this).val() == 'individualColor') {
-                    // Show the color system selection dropdown
-                    $('#color-system-selection').parent().show();
-                } else {
-                    // Hide the color system selection dropdown
-                    $('#color-system-selection').parent().hide();
-                }
-            });
-        });
-        $(document).ready(function() {
-            $('#dither-method').change(function() {
-                if ($(this).val() == "Customized") {
-                    $('#custom-dither-controls').show();
-                } else {
-                    $('#custom-dither-controls').hide();
-                    $('#custom-dither-matrix').empty();
-                }
-            });
-
-            $('#generate-matrix').click(function() {
-                const cols = parseInt($('#cols').val());
-                const rows = parseInt($('#rows').val());
-                const container = $('#custom-dither-matrix');
-                container.empty(); // Clear previous entries
-
-                if (isNaN(cols) || isNaN(rows) || cols < 1 || rows < 1 || cols > 15 || rows > 15) {
-                    $('#error-message').text('Please enter column and row numbers between 1 and 15.').show();
-                    return;
-                }
-                for (let r = 0; r < rows; r++) {
-                    const row = $('<div class="row custom-row justify-content-start"></div>');
-                    for (let c = 0; c < cols; c++) {
-                        row.append('<div class="col-auto px-1"><input type="text" class="form-control dither-input-box"></div>');
-                    }
-                    container.append(row);
-                }
-            });
-        });
-        </script>
 </body>
 </html>

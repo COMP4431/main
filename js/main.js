@@ -105,10 +105,87 @@ $(document).ready(function() {
     // Update button to apply all image processing functions
     $("#output-update").on("click", function() { imageproc.apply(); });
     
+     // Toggle between single and multiple output views
+     $("#toggle-view").click(function() {
+        if ($("#multiple-outputs").is(":visible")) {
+            $("#multiple-outputs").hide();
+            $("#multiple-button").hide();
+            $("#output").show();
+            $("#output-update").show();  // Show the main update button when single output is visible
+        } else {
+            $("#output").hide();
+            $("#multiple-button").show();
+            $("#multiple-outputs").show();
+            $("#output-update").hide();  // Hide the main update button when multiple outputs are visible
+        }
+    });
+
+    // Update single output
+    $("#output-update").click(function() {
+        if ($("#output").is(":visible")) {
+            imageproc.apply("output");
+        } else {
+            // Apply updates to all multiple outputs if single output is hidden
+            imageproc.apply("output1");
+            imageproc.apply("output2");
+            imageproc.apply("output3");
+            imageproc.apply("output4");
+        }
+    });
+
+    // Update individual outputs in multiple view
+    $("#output-update-1").click(function() { imageproc.apply("output1"); });
+    $("#output-update-2").click(function() { imageproc.apply("output2"); });
+    $("#output-update-3").click(function() { imageproc.apply("output3"); });
+    $("#output-update-4").click(function() { imageproc.apply("output4"); });
+
     // Enable Bootstrap Toggle
     $("input[type=checkbox]").bootstrapToggle();
 
     // Set up the event handlers
     $('a.nav-link').on("click", showTab); // Tab clicked
     $('a.dropdown-item').on("click", changeTabs); // Tab item clicked
+
+    // Initially hide the color system selection dropdown
+    $('#color-system-selection').parent().hide();
+        
+    // Function to toggle the visibility based on the color channel selection
+    $('#color-channel').on('change', function() {
+        if ($(this).val() == 'individualColor') {
+            // Show the color system selection dropdown
+            $('#color-system-selection').parent().show();
+        } else {
+            // Hide the color system selection dropdown
+            $('#color-system-selection').parent().hide();
+        }
+    });
+
+    $('#dither-method').change(function() {
+        if ($(this).val() == "Customized") {
+            $('#custom-dither-controls').show();
+        } else {
+            $('#custom-dither-controls').hide();
+            $('#custom-dither-matrix').empty();
+        }
+    });
+
+    $('#generate-matrix').click(function() {
+        const cols = parseInt($('#cols').val());
+        const rows = parseInt($('#rows').val());
+        const container = $('#custom-dither-matrix');
+        container.empty(); // Clear previous entries
+
+        if (isNaN(cols) || isNaN(rows) || cols < 1 || rows < 1 || cols > 15 || rows > 15) {
+            $('#error-message').text('Please enter column and row numbers between 1 and 15.').show();
+            return;
+        }
+        for (let r = 0; r < rows; r++) {
+            const row = $('<div class="row custom-row justify-content-start"></div>');
+            for (let c = 0; c < cols; c++) {
+                row.append('<div class="col-auto px-1"><input type="text" class="form-control dither-input-box"></div>');
+            }
+            container.append(row);
+        }
+    });
+
 });
