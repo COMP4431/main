@@ -95,8 +95,11 @@
             case "error-dither":
                 if ($("#dither-input2").val() == "processed")
                     inputImage = processedImage;
-                imageproc.errorDither(inputImage, outputImage,
+                imageproc.errorDither(inputImage, outputImage,$("#dither-color-channel").val(),
                                     $("#dither-method").val());
+                
+                
+                
                 break;
         }
     }
