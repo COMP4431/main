@@ -11,8 +11,8 @@
 
 #multiple-outputs .canvas-grid {
     display: grid;
-    grid-template-columns: repeat(2, 240px); /* creates two columns */
-    grid-template-rows: repeat(2, 180px); /* creates two rows */
+    grid-template-columns: repeat(2, 235px); /* creates two columns */
+    grid-template-rows: repeat(2, 175px); /* creates two rows */
     grid-gap: 10px; /* space between canvases */
     margin-bottom: 5px; /* space below the canvas grid */
 }
