@@ -34,24 +34,35 @@
      * Apply an image processing operation to an input image and
      * then put the output image in the output canvas
      */
-    imageproc.apply = function() {
+    imageproc.apply = function(outputId) {
         // Get the input image and create the output image buffer
         var inputImage = input.getImageData(0, 0,
                          input.canvas.clientWidth, input.canvas.clientHeight);
-        var outputImage = output.createImageData(input.canvas.clientWidth,
-                                                 input.canvas.clientHeight);
+        console.log("outputId:",outputId);
+        var outputCanvas = $("#" + outputId).get(0).getContext("2d");
+        // Create a new imageData object that matches the size of the output canvas
+        var outputImage = outputCanvas.createImageData(outputCanvas.canvas.width, outputCanvas.canvas.height);
 
-        // Update the alpha values of the newly created image
-        for (var i = 0; i < outputImage.data.length; i+=4)
-            outputImage.data[i + 3] = 255;
+        // Resize the input image to fit the output canvas
+        var tempCanvas = document.createElement("canvas");
+        var tempCtx = tempCanvas.getContext("2d");
+        tempCanvas.width = input.canvas.width;
+        tempCanvas.height = input.canvas.height;
+        tempCtx.putImageData(inputImage, 0, 0);
+
+        // Draw the resized image on the output canvas
+        outputCanvas.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, outputCanvas.canvas.width, outputCanvas.canvas.height);
+
+        // Now get the resized image data from the output canvas
+        var resizedImageData = outputCanvas.getImageData(0, 0, outputCanvas.canvas.width, outputCanvas.canvas.height);
 
         if (imageproc.operation) {
             // Apply the operation
-            imageproc.operation(inputImage, outputImage);
+            imageproc.operation(resizedImageData, outputImage);
         }
 
         // Put the output image in the canvas
-        output.putImageData(outputImage, 0, 0);
+        outputCanvas.putImageData(outputImage, 0, 0);
     }
 
     /*
