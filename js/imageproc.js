@@ -36,29 +36,27 @@
     var tempCtx2 = tempCanvas2.getContext('2d');
 
     // Initialize the magnifying glass on the output canvas
-    imageproc.initMagnifier = function(outputCanvasId) {
+    imageproc.initMagnifier = function(outputCanvasId,outputImage) {
         var canvas = document.getElementById(outputCanvasId);
-        console.log("canvas_magnified:",canvas);
-        console.log(canvas.width,canvas.height);
         var context = canvas.getContext('2d');
         
         function refreshCanvas() {
-            console.log("refreshCanvas");
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            console.log("tempCanvas2:",tempCanvas2);
-            context.drawImage(tempCanvas2, 0, 0, canvas.width, canvas.height);
+            // console.log("refreshCanvas");
+            // context.clearRect(0, 0, canvas.width, canvas.height);
+            // console.log("tempCanvas2:",tempCanvas2);
+            // context.drawImage(tempCanvas2, 0, 0, canvas.width, canvas.height);
+            context.putImageData(outputImage, 0, 0);
         }
 
         canvas.addEventListener('mousemove', function(e) {
             var bounds = canvas.getBoundingClientRect();
             var mouseX = e.clientX - bounds.left;
             var mouseY = e.clientY - bounds.top;
-
+            console.log("mouseX:",mouseX);
+            console.log("mouseY:",mouseY);
             // Adjust temporary canvas size
             tempCanvas2.width = canvas.width;
-            console.log("tempCanvas.width:",tempCanvas2.width);
             tempCanvas2.height = canvas.height;
-            console.log("tempCanvas.height:",tempCanvas2.height);
             tempCtx2.drawImage(canvas, 0, 0);
 
             // Clear and redraw base image
@@ -68,6 +66,8 @@
             context.save();
             context.beginPath();
             context.arc(mouseX, mouseY, magnifierRadius, 0, Math.PI * 2, true);
+            context.strokeStyle = 'black';
+            context.stroke();
             context.closePath();
             context.clip();
 
@@ -76,11 +76,15 @@
             var sourceY = Math.max(0, mouseY - magnifierRadius / zoomFactor);
             var sourceWidth = magnifierRadius * 2 / zoomFactor;
             var sourceHeight = magnifierRadius * 2 / zoomFactor;
+            console.log("sourceX:",sourceX);
+            console.log("sourceY:",sourceY);
+            console.log("sourceWidth:",sourceWidth);
+            console.log("sourceHeight:",sourceHeight);
 
             // Draw magnified content
             context.drawImage(tempCanvas2,
                 sourceX, sourceY, sourceWidth, sourceHeight,
-                mouseX - magnifierRadius, mouseY - magnifierRadius,
+                mouseX  - magnifierRadius/2, mouseY - magnifierRadius,
                 magnifierRadius * 2, magnifierRadius * 2);
 
             context.restore();
@@ -125,7 +129,7 @@
         // Put the output image in the canvas
         outputCanvas.putImageData(outputImage, 0, 0);
 
-        //imageproc.initMagnifier(outputId);
+        imageproc.initMagnifier(outputId,outputImage);
     }
 
     /*
