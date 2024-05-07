@@ -17,6 +17,8 @@ var currentShadeLayerOp = "no-op";
 var currentOutlineLayerOp = "no-op";
 
 let customMatrix = [];
+
+let colorChannelOp = "gray";
 // Event handler for the 'click' event of the tabs
 // The main goal of this handler is to improve the user experience by adding
 // the behaviour of switching tab when the tab is clicked, in additional to
@@ -140,6 +142,7 @@ $(document).ready(function() {
     $('#color-channel').on('change', function() {
         if ($(this).val() == 'individualColor') {
             // Show the color system selection dropdown
+            colorChannelOp = $("#color-system-selection").val();
             $('#color-system-selection').parent().show();
         } else {
             // Hide the color system selection dropdown

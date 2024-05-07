@@ -1,12 +1,21 @@
-    (function(imageproc) {
+
+
+
+
+
+
+
+(function(imageproc) {
         "use strict";
 
-        imageproc.errorDither = function(inputData, outputData, colorChannel,ditherMethod, customMatrix) {
+        imageproc.errorDither = function(inputData, outputData, colorChannel, ditherMethod, customMatrix) {
             console.log("Applying error dithering...", ditherMethod);
-            console.log("error:",customMatrix);
+            // console.log("error dithering Matrix:",customMatrix);
+            console.log("colorCahnnel: ", colorChannel);
             var errorDiffusionMatrix;
             var divisor;
 
+            // get the errorDiffusionMatrix and the divisor accroding to the ditherMethod
             switch (ditherMethod) {
                 case "Floyd-Steinberg":
                     errorDiffusionMatrix = [
@@ -84,51 +93,90 @@
                     divisor = sum;
                     break;
                 default:
-                console.error("Unsupported dithering method");
-                return;
+                    console.error("Unsupported dithering method");
+                    return;
             }
 
-            // Convert the image to grayscale
-            for (let y = 0; y < inputData.height; y++) {
-                for (let x = 0; x < inputData.width; x++) {
-                    var index = (x + y * inputData.width) * 4;
-                    var gray = (inputData.data[index] * 0.299 + inputData.data[index + 1] * 0.587 + inputData.data[index + 2] * 0.114);
-                    outputData.data[index] = gray;
-                    outputData.data[index + 1] = gray;
-                    outputData.data[index + 2] = gray;
-                    outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
-                }
-            }
+            // get the image to process accroding to different color system
+            switch(colorChannel){
+                case "gray":
+                    // Convert the image to grayscale
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var gray = (inputData.data[index] * 0.299 + inputData.data[index + 1] * 0.587 + inputData.data[index + 2] * 0.114);
+                            outputData.data[index] = gray;
+                            outputData.data[index + 1] = gray;
+                            outputData.data[index + 2] = gray;
+                            outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
+                        }
+                    }
+                    // Apply error diffusion
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var oldPixel = outputData.data[index];
+                            var newPixel = oldPixel < 128 ? 0 : 255;
+                            outputData.data[index] = newPixel;
+                            outputData.data[index + 1] = newPixel;
+                            outputData.data[index + 2] = newPixel;
 
-            // Apply error diffusion
-            for (let y = 0; y < inputData.height; y++) {
-                for (let x = 0; x < inputData.width; x++) {
-                    var index = (x + y * inputData.width) * 4;
-                    var oldPixel = outputData.data[index];
-                    var newPixel = oldPixel < 128 ? 0 : 255;
-                    outputData.data[index] = newPixel;
-                    outputData.data[index + 1] = newPixel;
-                    outputData.data[index + 2] = newPixel;
+                            var quantError = oldPixel - newPixel;
 
-                    var quantError = oldPixel - newPixel;
-
-                    for (let i = 0; i < errorDiffusionMatrix.length; i++) {
-                        for (let j = 0;j < errorDiffusionMatrix[i].length; j++) {
-                            if (errorDiffusionMatrix[i][j] === 0) {
-                                continue;
-                            }
-                            let newX = x + j - Math.floor(errorDiffusionMatrix[i].length / 2);
-                            let newY = y + i;
-                            if (newX >= 0 && newX < inputData.width && newY < inputData.height) {
-                                let newIndex = (newX + newY * inputData.width) * 4;
-                                let diffusedError = outputData.data[newIndex] + (quantError * errorDiffusionMatrix[i][j] / divisor);
-                                outputData.data[newIndex] = Math.max(0, Math.min(255, diffusedError));
-                                outputData.data[newIndex + 1] = Math.max(0, Math.min(255, diffusedError));
-                                outputData.data[newIndex + 2] = Math.max(0, Math.min(255, diffusedError));
+                            for (let i = 0; i < errorDiffusionMatrix.length; i++) {
+                                for (let j = 0;j < errorDiffusionMatrix[i].length; j++) {
+                                    if (errorDiffusionMatrix[i][j] === 0) {
+                                        continue;
+                                    }
+                                    let newX = x + j - Math.floor(errorDiffusionMatrix[i].length / 2);
+                                    let newY = y + i;
+                                    if (newX >= 0 && newX < inputData.width && newY < inputData.height) {
+                                        let newIndex = (newX + newY * inputData.width) * 4;
+                                        let diffusedError = outputData.data[newIndex] + (quantError * errorDiffusionMatrix[i][j] / divisor);
+                                        outputData.data[newIndex] = Math.max(0, Math.min(255, diffusedError));
+                                        outputData.data[newIndex + 1] = Math.max(0, Math.min(255, diffusedError));
+                                        outputData.data[newIndex + 2] = Math.max(0, Math.min(255, diffusedError));
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    break;
+                case "rgb":
+                    // Keep the image in RGB format
+                    for (let i = 0; i < inputData.data.length; i++) {
+                        outputData.data[i] = inputData.data[i];
+                    }
+
+                    break;
+                case "hsi":
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var hsi_value = imageproc.fromRGBToHSV(r, g, b);
+
+                        }
+                    }
+                    
+                    break;
+                case "cym":
+                    break;
+                default:
+                    console.error("Fail to convert image into the targeted color channel")
+                    return;
             }
+
+            // // Convert the image to grayscale
+            // for (let y = 0; y < inputData.height; y++) {
+            //     for (let x = 0; x < inputData.width; x++) {
+            //         var index = (x + y * inputData.width) * 4;
+            //         var gray = (inputData.data[index] * 0.299 + inputData.data[index + 1] * 0.587 + inputData.data[index + 2] * 0.114);
+            //         outputData.data[index] = gray;
+            //         outputData.data[index + 1] = gray;
+            //         outputData.data[index + 2] = gray;
+            //         outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
+            //     }
+            // }
+
+            
         };                
 }(window.imageproc = window.imageproc || {}));
