@@ -47,7 +47,7 @@
 
         if (imageproc.operation) {
             // Apply the operation
-            imageproc.operation(inputImage, outputImage);
+            imageproc.operation(inputImage, outputImage, customMatrix);
         }
 
         // Put the output image in the canvas

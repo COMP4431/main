@@ -16,6 +16,7 @@ var currentShadeLayerOp = "no-op";
 // Currently selected outline layer operation
 var currentOutlineLayerOp = "no-op";
 
+let customMatrix = [];
 // Event handler for the 'click' event of the tabs
 // The main goal of this handler is to improve the user experience by adding
 // the behaviour of switching tab when the tab is clicked, in additional to
@@ -168,7 +169,7 @@ $(document).ready(function() {
             $('#custom-dither-matrix').empty();
         }
     });
-
+    // Update the click event handler for generating the custom matrix
     $('#generate-matrix').click(function() {
         const cols = parseInt($('#cols').val());
         const rows = parseInt($('#rows').val());
@@ -179,15 +180,63 @@ $(document).ready(function() {
             $('#error-message').text('Please enter column and row numbers between 1 and 15.').show();
             return;
         }
+        customMatrix = []; // Reset custom matrix
         for (let r = 0; r < rows; r++) {
+            const rowValues = [];
             const row = $('<div class="row custom-row justify-content-start"></div>');
             for (let c = 0; c < cols; c++) {
-                row.append('<div class="col-auto px-1"><input type="text" class="form-control dither-input-box"></div>');
+                const inputField = $('<input type="text" class="form-control dither-input-box">');
+                if (r === 0 && c === 0) {
+                    inputField.val('0').prop('readonly', true); // Set first entry to 0 and make it readonly
+                }
+                rowValues.push(inputField.val()); // Store input field value
+                row.append('<div class="col-auto px-1"></div>').append(inputField);
             }
+            customMatrix.push(rowValues); // Store row values in custom matrix
             container.append(row);
         }
+        $('#custom-dither-submit').show();
     });
 
+    // // Update the click event handler for generating the custom matrix
+    // $('#generate-matrix').click(function() {
+    //     const cols = parseInt($('#cols').val());
+    //     const rows = parseInt($('#rows').val());
+    //     const container = $('#custom-dither-matrix');
+    //     container.empty(); // Clear previous entries
+
+    //     if (isNaN(cols) || isNaN(rows) || cols < 1 || rows < 1 || cols > 15 || rows > 15) {
+    //         $('#error-message').text('Please enter column and row numbers between 1 and 15.').show();
+    //         return;
+    //     }
+    //     customMatrix = []; // Reset custom matrix
+    //     for (let r = 0; r < rows; r++) {
+    //         const rowValues = [];
+    //         const row = $('<div class="row custom-row justify-content-start"></div>');
+    //         for (let c = 0; c < cols; c++) {
+    //             const inputField = $('<input type="text" class="form-control dither-input-box">');
+    //             row.append('<div class="col-auto px-1"></div>').append(inputField);
+    //         }
+    //         container.append(row);
+    //     }
+    //     $('#custom-dither-submit').show();
+    // });
+
+    // Update the event handler for submitting the custom matrix
+    $('#custom-dither-submit').click(function() {
+        // Reset custom matrix
+        customMatrix = [];
+        // Iterate over each row
+        $('.custom-row').each(function() {
+            const rowValues = [];
+            // Iterate over input fields in the row
+            $(this).find('.dither-input-box').each(function() {
+                rowValues.push($(this).val()); // Store input field value
+            });
+            customMatrix.push(rowValues); // Store row values in custom matrix
+        });
+        console.log("Custom matrix:", customMatrix);
+    });
 });
 
 // for the custom image upload

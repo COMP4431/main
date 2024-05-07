@@ -91,6 +91,8 @@
                     <button id="output-update-2" class="btn btn-info"><i class="fas fa-sync"></i> Update 2</button>
                     <button id="output-update-3" class="btn btn-info"><i class="fas fa-sync"></i> Update 3</button>
                     <button id="output-update-4" class="btn btn-info"><i class="fas fa-sync"></i> Update 4</button>
+                </div>
+                <div>
                     <button id="toggle-view" class="btn btn-secondary"><i class="fas fa-exchange-alt"></i> Toggle Multiple View</button>
                 </div>
             </div>
@@ -133,7 +135,7 @@
 
                     <!-- Shade layer -->
                     <li class="nav-item dropdown" id="shade-dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Error Dithering<br><span class="title"><i>Do Nothing</i></span>
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">Dithering<br><span class="title"><i>Do Nothing</i></span>
                         <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#no-op"><i>Do Nothing</i></a></li>
@@ -182,7 +184,7 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-3">
-                                    <label for="brightness-offset">Brightness offset:</label>
+                                    <label for="brightnesf-offset">Brightness offset:</label>
                                     <div class="input-group">
                                         <div class="row flex-fill align-items-center mx-0 px-2 border rounded-left">
                                             <input class="custom-range" id="brightness-offset" type="range" value="0" min="-255" max="255" step="1"
@@ -442,6 +444,9 @@
                                 </div>
                                 <div class="col-12">
                                     <div id="custom-dither-matrix" class="container-fluid"></div>
+                                </div>
+                                <div class="col-3" style="display:none;" id="custom-dither-submit">
+                                    <button id="submit-matrix" type="button" class="btn btn-primary mt-2">Submit Matrix</button>
                                 </div>
                                 <div id="error-message" class="alert alert-danger" style="display:none;"></div>
                             </div>
