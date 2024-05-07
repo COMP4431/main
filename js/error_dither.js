@@ -1,9 +1,9 @@
     (function(imageproc) {
         "use strict";
 
-        imageproc.errorDither = function(inputData, outputData, colorChannel,ditherMethod) {
+        imageproc.errorDither = function(inputData, outputData, colorChannel,ditherMethod, customMatrix) {
             console.log("Applying error dithering...", ditherMethod);
-
+            console.log("error:",customMatrix);
             var errorDiffusionMatrix;
             var divisor;
 
@@ -47,9 +47,45 @@
                     ];
                     divisor = 42;
                     break;
+                case "Customized":
+                    var allZero = true;
+                    // Convert string values to integers in customMatrix
+                    for (let i = 0; i < customMatrix.length; i++) {
+                        for (let j = 0; j < customMatrix[i].length; j++) {
+                            customMatrix[i][j] = parseInt(customMatrix[i][j]);
+                        }
+                    }
+                    errorDiffusionMatrix = customMatrix.slice();
+                    for (var i = 0; i < customMatrix.length; i++) {
+                        for (var j = 0; j < customMatrix[i].length; j++) {
+                            if (customMatrix[i][j] != 0) {
+                                allZero = false;
+                                break;
+                            }
+                        }
+                        if (!allZero) {
+                            break;
+                        }
+                    }
+                    // If all values are zero, display an error message and stop
+                    if (allZero) {
+                        console.error("All values in the custom matrix are zero.");
+                        return;
+                    }
+                    // Use customMatrix in your processing logic
+                    // console.log("Custom matrix:", customMatrix);
+                    let sum = 0;
+                    customMatrix.forEach(row => {
+                        row.forEach(cell => {
+                            sum += parseInt(cell); // Add cell value to sum
+                        });
+                    });
+                    console.log("Sum of the matrix:", sum);
+                    divisor = sum;
+                    break;
                 default:
-                    console.error("Unsupported dithering method");
-                    return;
+                console.error("Unsupported dithering method");
+                return;
             }
 
             // Convert the image to grayscale
