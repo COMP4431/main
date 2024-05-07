@@ -118,7 +118,8 @@
 
         if (imageproc.operation) {
             // Apply the operation
-            imageproc.operation(resizedImageData, outputImage);
+            imageproc.operation(inputImage, outputImage, customMatrix);
+
         }
 
         // Put the output image in the canvas

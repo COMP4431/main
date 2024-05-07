@@ -83,7 +83,7 @@
     /*
      * Apply the shade layer operations
      */
-    function applyShadeLayerOp(inputImage, processedImage, outputImage) {
+    function applyShadeLayerOp(inputImage, processedImage, outputImage, customMatrix) {
         switch (currentShadeLayerOp) {
             // Apply dither
             case "dither":
@@ -95,8 +95,9 @@
             case "error-dither":
                 if ($("#dither-input2").val() == "processed")
                     inputImage = processedImage;
+                console.log("shade:", customMatrix)
                 imageproc.errorDither(inputImage, outputImage,$("#dither-color-channel").val(),
-                                    $("#dither-method").val());
+                                    $("#dither-method").val(), customMatrix);
                 
                 
                 
@@ -153,7 +154,7 @@
      * Operations are applied from the base layer to the outline layer. These
      * layers are combined appropriately when required.
      */
-    imageproc.operation = function(inputImage, outputImage) {
+    imageproc.operation = function(inputImage, outputImage, customMatrix) {
         // Apply the basic processing operations
         var processedImage = inputImage;
         if (currentBasicOp != "no-op") {
@@ -172,7 +173,7 @@
         var shadeLayer = baseLayer;
         if (currentShadeLayerOp != "no-op") {
             shadeLayer = imageproc.createBuffer(outputImage);
-            applyShadeLayerOp(inputImage, processedImage, shadeLayer);
+            applyShadeLayerOp(inputImage, processedImage, shadeLayer, customMatrix);
             //console.log("shadeLayer",shadeLayer.data);
             //console.log("processedImage",processedImage.data);
 
