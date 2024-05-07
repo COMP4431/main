@@ -118,7 +118,7 @@
 
         if (imageproc.operation) {
             // Apply the operation
-            imageproc.operation(inputImage, outputImage, customMatrix);
+            imageproc.operation(resizedImageData, outputImage, customMatrix);
 
         }
 
