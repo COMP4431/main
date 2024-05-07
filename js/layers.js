@@ -83,7 +83,7 @@
     /*
      * Apply the shade layer operations
      */
-    function applyShadeLayerOp(inputImage, processedImage, outputImage, customMatrix) {
+    function applyShadeLayerOp(inputImage, processedImage, outputImage, customMatrix, colorChannelOp) {
         switch (currentShadeLayerOp) {
             // Apply dither
             case "dither":
@@ -95,11 +95,10 @@
             case "error-dither":
                 if ($("#dither-input2").val() == "processed")
                     inputImage = processedImage;
-                console.log("shade:", customMatrix)
-                imageproc.errorDither(inputImage, outputImage,$("#dither-color-channel").val(),
+                console.log("layer:", $("#color-system-selection").val())
+                console.log("layer-colorCahnnel: ", colorChannelOp)
+                imageproc.errorDither(inputImage, outputImage, colorChannelOp,
                                     $("#dither-method").val(), customMatrix);
-                
-                
                 
                 break;
         }
@@ -173,7 +172,7 @@
         var shadeLayer = baseLayer;
         if (currentShadeLayerOp != "no-op") {
             shadeLayer = imageproc.createBuffer(outputImage);
-            applyShadeLayerOp(inputImage, processedImage, shadeLayer, customMatrix);
+            applyShadeLayerOp(inputImage, processedImage, shadeLayer, customMatrix, colorChannelOp);
             //console.log("shadeLayer",shadeLayer.data);
             //console.log("processedImage",processedImage.data);
 
