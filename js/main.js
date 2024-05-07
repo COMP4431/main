@@ -103,8 +103,6 @@ $(document).ready(function() {
     // Update the input image when the selection is changed
     $("#input-image").on("change", function() { imageproc.updateInputImage(); });
 
-    // Update button to apply all image processing functions
-    $("#output-update").on("click", function() { imageproc.apply(); });
     
      // Toggle between single and multiple output views
      $("#toggle-view").click(function() {
@@ -121,25 +119,13 @@ $(document).ready(function() {
         }
     });
 
-    // Update single output
-    $("#output-update").click(function() {
-        if ($("#output").is(":visible")) {
-            imageproc.apply("output");
-        } else {
-            // Apply updates to all multiple outputs if single output is hidden
-            imageproc.apply("output1");
-            imageproc.apply("output2");
-            imageproc.apply("output3");
-            imageproc.apply("output4");
-        }
-    });
-
+    // Update button to apply all image processing functions
+    $("#output-update").on("click", function() { imageproc.apply("output"); });
     // Update individual outputs in multiple view
     $("#output-update-1").click(function() { imageproc.apply("output1"); });
     $("#output-update-2").click(function() { imageproc.apply("output2"); });
     $("#output-update-3").click(function() { imageproc.apply("output3"); });
     $("#output-update-4").click(function() { imageproc.apply("output4"); });
-
     // Enable Bootstrap Toggle
     $("input[type=checkbox]").bootstrapToggle();
 
