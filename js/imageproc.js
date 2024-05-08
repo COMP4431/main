@@ -84,7 +84,7 @@
             // Draw magnified content
             context.drawImage(tempCanvas2,
                 sourceX, sourceY, sourceWidth, sourceHeight,
-                mouseX  - magnifierRadius/2, mouseY - magnifierRadius,
+                mouseX - magnifierRadius/8, mouseY - magnifierRadius,
                 magnifierRadius * 2, magnifierRadius * 2);
 
             context.restore();
