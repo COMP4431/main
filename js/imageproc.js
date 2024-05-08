@@ -4,6 +4,8 @@
     var input, output;
     var imageSelector;
 
+    var magnifierRadius = 50;
+    var zoomFactor = 3;
     imageproc.operation = null;
 
     /*
@@ -30,83 +32,75 @@
         image.src = "images/" + imageSelector.val();
     }
 
-    var magnifierRadius = 50;
-    var zoomFactor = 2;
-    var tempCanvas2 = document.createElement('canvas');
-    var tempCtx2 = tempCanvas2.getContext('2d');
-
     // Initialize the magnifying glass on the output canvas
-    imageproc.initMagnifier = function(outputCanvasId,outputImage) {
+    imageproc.initMagnifier = function(outputCanvasId, outputImage) {
         var canvas = document.getElementById(outputCanvasId);
         var context = canvas.getContext('2d');
-        
+    
         function refreshCanvas() {
-            // console.log("refreshCanvas");
-            // context.clearRect(0, 0, canvas.width, canvas.height);
-            // console.log("tempCanvas2:",tempCanvas2);
-            // context.drawImage(tempCanvas2, 0, 0, canvas.width, canvas.height);
             context.putImageData(outputImage, 0, 0);
         }
-
+    
         canvas.addEventListener('mousemove', function(e) {
             var bounds = canvas.getBoundingClientRect();
             var mouseX = e.clientX - bounds.left;
             var mouseY = e.clientY - bounds.top;
-            console.log("mouseX:",mouseX);
-            console.log("mouseY:",mouseY);
-            // Adjust temporary canvas size
-            tempCanvas2.width = canvas.width;
-            tempCanvas2.height = canvas.height;
-            tempCtx2.drawImage(canvas, 0, 0);
-
+    
+            // Calculate scale factors
+            var scaleX = canvas.width / bounds.width;
+            var scaleY = canvas.height / bounds.height;
+    
+            // Adjust magnifier radius based on scaling
+            var adjustedRadiusX = magnifierRadius * scaleX;
+            var adjustedRadiusY = magnifierRadius * scaleY;
+    
             // Clear and redraw base image
             refreshCanvas();
-
+    
             // Set up magnification
             context.save();
             context.beginPath();
-            context.arc(mouseX, mouseY, magnifierRadius, 0, Math.PI * 2, true);
+            // Use ellipse for correct aspect ratio
+            context.ellipse(mouseX, mouseY, adjustedRadiusX, adjustedRadiusY, 0, 0, Math.PI * 2, true);
             context.strokeStyle = 'black';
             context.stroke();
             context.closePath();
             context.clip();
-
+    
             // Adjust source rectangle to avoid out-of-bounds issues
-            var sourceX = Math.max(0, mouseX - magnifierRadius / zoomFactor);
-            var sourceY = Math.max(0, mouseY - magnifierRadius / zoomFactor);
-            var sourceWidth = magnifierRadius * 2 / zoomFactor;
-            var sourceHeight = magnifierRadius * 2 / zoomFactor;
-            console.log("sourceX:",sourceX);
-            console.log("sourceY:",sourceY);
-            console.log("sourceWidth:",sourceWidth);
-            console.log("sourceHeight:",sourceHeight);
-
-            // Draw magnified content
-            context.drawImage(tempCanvas2,
+            var sourceX = Math.max(0, mouseX - (adjustedRadiusX / zoomFactor));
+            var sourceY = Math.max(0, mouseY - (adjustedRadiusY / zoomFactor));
+            var sourceWidth = Math.min(canvas.width - sourceX, adjustedRadiusX * 2 / zoomFactor);
+            var sourceHeight = Math.min(canvas.height - sourceY, adjustedRadiusY * 2 / zoomFactor);
+    
+            context.drawImage(canvas,
                 sourceX, sourceY, sourceWidth, sourceHeight,
-                mouseX - magnifierRadius/8, mouseY - magnifierRadius,
-                magnifierRadius * 2, magnifierRadius * 2);
-
+                mouseX - adjustedRadiusX, mouseY - adjustedRadiusY,
+                adjustedRadiusX * 2, adjustedRadiusY * 2);
             context.restore();
         });
+    
         canvas.addEventListener('mouseleave', function() {
             refreshCanvas();
         });
     };
+    
     /*
      * Apply an image processing operation to an input image and
      * then put the output image in the output canvas
      */
     imageproc.apply = function(outputId) {
-        // Get the input image and create the output image buffer
-        var inputImage = input.getImageData(0, 0,
-                         input.canvas.clientWidth, input.canvas.clientHeight);
+
         console.log("outputId:",outputId);
+
+        // Get the input image and create the output image buffer
+        var inputImage = input.getImageData(0, 0, input.canvas.clientWidth, input.canvas.clientHeight);        
         var outputCanvas = $("#" + outputId).get(0).getContext("2d");
         // Create a new imageData object that matches the size of the output canvas
         var outputImage = outputCanvas.createImageData(outputCanvas.canvas.width, outputCanvas.canvas.height);
         console.log("outputImage:",outputCanvas.canvas.width,outputCanvas.canvas.height);
-        // Resize the input image to fit the output canvas
+
+        // Resize the input image to fit the output canvas - to convert the image into htmlelement to process
         var tempCanvas = document.createElement("canvas");
         var tempCtx = tempCanvas.getContext("2d");
         tempCanvas.width = input.canvas.width;
