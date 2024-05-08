@@ -181,6 +181,92 @@
                 "b": Math.round(b * 255)};
     }
 
+    imageproc.fromRGBToHSV2 = function(r, g, b) {
+        r /= 255, g /= 255, b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, v = max;
+
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+
+        if (max === min) {
+            h = 0; // achromatic
+        } else {
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6; // converting from 0-6 to 0-1
+        }
+
+        // Scale h, s, and v to the range 0-255
+        h = Math.round(h * 255);
+        s = Math.round(s * 255);
+        v = Math.round(v * 255);
+
+        return {h: h, s: s, v: v};
+    };
+
+    imageproc.fromHSVToRGB2 = function(h, s, v) {
+        h /= 255; // scale h back from 0-255 to 0-1
+        s /= 255; // scale s back from 0-255 to 0-1
+        v /= 255; // scale v back from 0-255 to 0-1
+
+        var r, g, b;
+        var i = Math.floor(h * 6);
+        var f = h * 6 - i;
+        var p = v * (1 - s);
+        var q = v * (1 - f * s);
+        var t = v * (1 - (1 - f) * s);
+
+        switch (i % 6) {
+            case 0: r = v, g = t, b = p; break;
+            case 1: r = q, g = v, b = p; break;
+            case 2: r = p, g = v, b = t; break;
+            case 3: r = p, g = q, b = v; break;
+            case 4: r = t, g = p, b = v; break;
+            case 5: r = v, g = p, b = q; break;
+        }
+
+        // Convert back to 0-255 range
+        r = Math.round(r * 255);
+        g = Math.round(g * 255);
+        b = Math.round(b * 255);
+
+        return {r: r, g: g, b: b};
+    };
+
+    imageproc.fromRGBToCMYK = function(r, g, b) {
+        let c = 255 - r;
+        let m = 255 - g;
+        let y = 255 - b;
+        let k = Math.min(c, m, y);
+
+        if (k != 255) {
+            c = ((c - k) / (255 - k)) * 255;
+            m = ((m - k) / (255 - k)) * 255;
+            y = ((y - k) / (255 - k)) * 255;
+        } else {
+            c = 0;
+            m = 0;
+            y = 0;
+        }
+
+        return {c: Math.round(c), m: Math.round(m), y: Math.round(y), k: Math.round(k)};
+    };
+
+    imageproc.fromCMYKToRGB = function(c, m, y, k) {
+        c = (c * (255 - k) / 255) + k;
+        m = (m * (255 - k) / 255) + k;
+        y = (y * (255 - k) / 255) + k;
+
+        let r = 255 - c;
+        let g = 255 - m;
+        let b = 255 - y;
+
+        return {r: Math.round(r), g: Math.round(g), b: Math.round(b)};
+    };
     /*
      * Get a pixel colour from an ImageData object
      * 

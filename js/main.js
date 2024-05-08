@@ -147,7 +147,7 @@ $(document).ready(function() {
         const colorSpaces = {
             'rgb': ['red', 'green', 'blue'],
             'hsv': ['h', 's', 'v'],
-            'cym': ['c', 'y', 'm']
+            'cmyk': ['c', 'm', 'y', 'k']
         };
 
         // Determine which color space is currently selected in your system
@@ -158,10 +158,10 @@ $(document).ready(function() {
             colors.forEach(color => {
                 const controlHtml = `
                     <div class="col-3 posterization-control-${selectedColorSpace}">
-                        <label for="posterization-${color}-bits">${color.toUpperCase()} bits (to keep):</label>
+                        <label for="post-${color}-bits">${color.toUpperCase()} bits (to keep):</label>
                         <div class="input-group">
                             <div class="row flex-fill align-items-center mx-0 px-2 border rounded-left">
-                                <input class="custom-range" id="posterization-${color}-bits" type="range" value="2" min="1" max="8" step="1"
+                                <input class="custom-range" id="post-${color}-bits" type="range" value="2" min="1" max="8" step="1"
                                 oninput="$(this).parents('.input-group').find('.input-group-text').html($(this).val() + ' bits')">
                             </div>
                             <div class="input-group-append"><span class="input-group-text">2 bits</span></div>
@@ -177,12 +177,6 @@ $(document).ready(function() {
         }
     }
     
-    $("input[type='range']").on('change', function() {
-        var redBits = parseInt($("#posterization-red-bits").val());
-        var greenBits = parseInt($("#posterization-green-bits").val());
-        var blueBits = parseInt($("#posterization-blue-bits").val());
-        console.log("Red:", redBits, "Green:", greenBits, "Blue:", blueBits);
-    });
 
     // Function to toggle the visibility based on the color channel selection
     $('#color-channel').on('change', function() {
@@ -312,4 +306,17 @@ document.getElementById('upload-image').addEventListener('change', function(e) {
     const fileName = e.target.files[0].name;
     const nextSibling = e.target.nextElementSibling;
     nextSibling.innerText = fileName;
+});
+
+$(document).on('input change', '#post-red-bits, #post-green-bits, #post-blue-bits', function() {
+    console.log("Slider changed");
+    var redBits = parseInt($("#post-red-bits").val());
+    var greenBits = parseInt($("#post-green-bits").val());
+    var blueBits = parseInt($("#post-blue-bits").val());
+    console.log("Red bits:", redBits, "Green bits:", greenBits, "Blue bits:", blueBits);
+});
+
+$('#test-button').click(function() {
+    var redBits = parseInt($("#posterization-red-bits").val());
+    console.log("Testing Red bits:", redBits);
 });
