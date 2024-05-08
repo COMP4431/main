@@ -8,10 +8,10 @@
 (function(imageproc) {
         "use strict";
 
-        imageproc.errorDither = function(inputData, outputData, colorChannel, ditherMethod, customMatrix) {
+        imageproc.errorDither = function(inputData, outputData, colorSystem, ditherMethod, customMatrix) {
             console.log("Applying error dithering...", ditherMethod);
             // console.log("error dithering Matrix:",customMatrix);
-            console.log("colorCahnnel: ", colorChannel);
+            console.log("colorCahnnel: ", colorSystem);
             var errorDiffusionMatrix;
             var divisor;
 
@@ -97,8 +97,53 @@
                     return;
             }
 
+            function makeBitMask(bits) {
+                var mask = 0;
+                for (var i = 0; i < bits; i++) {
+                    mask >>= 1;
+                    mask |= 128;
+                }
+                return mask;
+            }
+
+            function  errorDiffusionDither(colorChannel, colorSystem, Bits){
+                // Apply error diffusion
+                for (let y = 0; y < inputData.height; y++) {
+                    for (let x = 0; x < inputData.width; x++) {
+                        var index = (x + y * inputData.width) * 4;
+                        var oldPixel = outputData.data[index+colorChannel];
+                        //var newPixel = oldPixel < 128 ? 0 : 255;
+                        switch(colorSystem){
+                            case "gray":
+                                var newPixel = oldPixel < 128 ? 0 : 255;
+                                break;
+                            case "rgb"|| "hsi"|| "cym":
+                                var newPixel = oldPixel & makeBitMask(Bits);
+                                break;
+                        };    
+                        outputData.data[index+ colorChannel] = newPixel;
+                        var quantError = oldPixel - newPixel;
+
+                        for (let i = 0; i < errorDiffusionMatrix.length; i++) {
+                            for (let j = 0;j < errorDiffusionMatrix[i].length; j++) {
+                                if (errorDiffusionMatrix[i][j] === 0) {
+                                    continue;
+                                }
+                                let newX = x + j - Math.floor(errorDiffusionMatrix[i].length / 2);
+                                let newY = y + i;
+                                if (newX >= 0 && newX < inputData.width && newY < inputData.height) {
+                                    let newIndex = (newX + newY * inputData.width) * 4;
+                                    let diffusedError = outputData.data[newIndex+colorChannel] + (quantError * errorDiffusionMatrix[i][j] / divisor);
+                                    outputData.data[newIndex+colorChannel] = Math.max(0, Math.min(255, diffusedError));
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
             // get the image to process accroding to different color system
-            switch(colorChannel){
+            switch(colorSystem){
                 case "gray":
                     // Convert the image to grayscale
                     for (let y = 0; y < inputData.height; y++) {
@@ -111,48 +156,63 @@
                             outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
                         }
                     }
-                    // Apply error diffusion
-                    for (let y = 0; y < inputData.height; y++) {
-                        for (let x = 0; x < inputData.width; x++) {
-                            var index = (x + y * inputData.width) * 4;
-                            var oldPixel = outputData.data[index];
-                            var newPixel = oldPixel < 128 ? 0 : 255;
-                            outputData.data[index] = newPixel;
-                            outputData.data[index + 1] = newPixel;
-                            outputData.data[index + 2] = newPixel;
-
-                            var quantError = oldPixel - newPixel;
-
-                            for (let i = 0; i < errorDiffusionMatrix.length; i++) {
-                                for (let j = 0;j < errorDiffusionMatrix[i].length; j++) {
-                                    if (errorDiffusionMatrix[i][j] === 0) {
-                                        continue;
-                                    }
-                                    let newX = x + j - Math.floor(errorDiffusionMatrix[i].length / 2);
-                                    let newY = y + i;
-                                    if (newX >= 0 && newX < inputData.width && newY < inputData.height) {
-                                        let newIndex = (newX + newY * inputData.width) * 4;
-                                        let diffusedError = outputData.data[newIndex] + (quantError * errorDiffusionMatrix[i][j] / divisor);
-                                        outputData.data[newIndex] = Math.max(0, Math.min(255, diffusedError));
-                                        outputData.data[newIndex + 1] = Math.max(0, Math.min(255, diffusedError));
-                                        outputData.data[newIndex + 2] = Math.max(0, Math.min(255, diffusedError));
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    errorDiffusionDither(0, colorSystem);
+                    errorDiffusionDither(1, colorSystem);
+                    errorDiffusionDither(2, colorSystem);
                     break;
                 case "rgb":
                     // Keep the image in RGB format
-                    for (let i = 0; i < inputData.data.length; i++) {
-                        outputData.data[i] = inputData.data[i];
-                    }
-
-                    break;
-                case "hsi":
                     for (let y = 0; y < inputData.height; y++) {
                         for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            //var gray = (inputData.data[index] * 0.299 + inputData.data[index + 1] * 0.587 + inputData.data[index + 2] * 0.114);
+                            outputData.data[index] = inputData.data[index];
+                            outputData.data[index + 1] = inputData.data[index + 1];
+                            outputData.data[index + 2] = inputData.data[index + 2];
+                            outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
+                        }
+                    }
+                    var redBits = parseInt($("#posterization-red-bits").val());
+                    var greenBits = parseInt($("#posterization-green-bits").val());
+                    var blueBits = parseInt($("#posterization-blue-bits").val());
+                    console.log("Applying posterization with", redBits, "red bits,", greenBits, "green bits, and", blueBits, "blue bits.");
+                    errorDiffusionDither(0, colorSystem, redBits);
+                    errorDiffusionDither(1, colorSystem, greenBits);
+                    errorDiffusionDither(2, colorSystem, blueBits);
+                    break;
+                case "hsv":
+                    //convert to HSI
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var r = inputData.data[index];
+                            var g = inputData.data[index + 1];
+                            var b = inputData.data[index + 2];
                             var hsi_value = imageproc.fromRGBToHSV(r, g, b);
+                            outputData.data[index + 1] = hsi_value.h;
+                            outputData.data[index + 2] = hsi_value.s;
+                            outputData.data[index + 3] = hsi_value.v;
+                        }
+                    }
+                    //apply error diffusion
+                    var hBits = parseInt($("#posterization-h-bits").val());
+                    var sBits = parseInt($("#posterization-s-bits").val());
+                    var vBits = parseInt($("#posterization-v-bits").val());
+                    console.log("hBits:",hBits);
+                    errorDiffusionDither(0, colorSystem, hBits);
+                    errorDiffusionDither(1, colorSystem, sBits);
+                    errorDiffusionDither(2, colorSystem, vBits);
+                    //convert back to RGB
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var h = outputData.data[index];
+                            var s = outputData.data[index + 1];
+                            var v = outputData.data[index + 2];
+                            var rgb_value = imageproc.fromRGBToHSV(h, s, v);
+                            outputData.data[index + 1] = rgb_value.r;
+                            outputData.data[index + 2] = rgb_value.g;
+                            outputData.data[index + 3] = rgb_value.b;
 
                         }
                     }
@@ -176,7 +236,5 @@
             //         outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
             //     }
             // }
-
-            
         };                
 }(window.imageproc = window.imageproc || {}));

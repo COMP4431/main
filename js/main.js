@@ -138,17 +138,72 @@ $(document).ready(function() {
     // Initially hide the color system selection dropdown
     $('#color-system-selection').parent().hide();
         
+    
+
+    function createPosterizationControls() {
+        const controlsContainer = $('#posterization-controls');
+        controlsContainer.empty(); // Clear any existing controls
+
+        const colorSpaces = {
+            'rgb': ['red', 'green', 'blue'],
+            'hsv': ['h', 's', 'v'],
+            'cym': ['c', 'y', 'm']
+        };
+
+        // Determine which color space is currently selected in your system
+        const selectedColorSpace = $('#color-system-selection').val().toLowerCase(); // Ensure this ID matches your color system selection dropdown
+        console.log("selectedColorSpace:",selectedColorSpace);
+        const colors = colorSpaces[selectedColorSpace] || []; // Default to empty if no match
+        if (colors.length > 0) {
+            colors.forEach(color => {
+                const controlHtml = `
+                    <div class="col-3 posterization-control-${selectedColorSpace}">
+                        <label for="posterization-${color}-bits">${color.toUpperCase()} bits (to keep):</label>
+                        <div class="input-group">
+                            <div class="row flex-fill align-items-center mx-0 px-2 border rounded-left">
+                                <input class="custom-range" id="posterization-${color}-bits" type="range" value="2" min="1" max="8" step="1"
+                                oninput="$(this).parents('.input-group').find('.input-group-text').html($(this).val() + ' bits')">
+                            </div>
+                            <div class="input-group-append"><span class="input-group-text">2 bits</span></div>
+                        </div>
+                    </div>
+                `;
+                controlsContainer.append(controlHtml);
+            });
+            controlsContainer.show();
+        }
+        else{
+            controlsContainer.hide();
+        }
+    }
+    
+    $("input[type='range']").on('change', function() {
+        var redBits = parseInt($("#posterization-red-bits").val());
+        var greenBits = parseInt($("#posterization-green-bits").val());
+        var blueBits = parseInt($("#posterization-blue-bits").val());
+        console.log("Red:", redBits, "Green:", greenBits, "Blue:", blueBits);
+    });
+
     // Function to toggle the visibility based on the color channel selection
     $('#color-channel').on('change', function() {
         if ($(this).val() == 'individualColor') {
             // Show the color system selection dropdown
             colorChannelOp = $("#color-system-selection").val();
             $('#color-system-selection').parent().show();
+            createPosterizationControls();
         } else {
             // Hide the color system selection dropdown
             $('#color-system-selection').parent().hide();
+            $('#posterization-controls').hide();
         }
     });
+    
+    // Listen to changes on the color system selection
+    $('#color-system-selection').on('change', createPosterizationControls);
+
+    // Initially hide the controls on page load
+    $('#color-system-selection').parent().hide();
+    $('#posterization-controls').hide();
 
     $('#dither-method').change(function() {
         if ($(this).val() == "Customized") {
@@ -226,6 +281,8 @@ $(document).ready(function() {
         });
         console.log("Custom matrix:", customMatrix);
     });
+
+
 });
 
 // for the custom image upload
