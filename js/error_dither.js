@@ -113,14 +113,12 @@
                         var index = (x + y * inputData.width) * 4;
                         var oldPixel = outputData.data[index+colorChannel];
                         //var newPixel = oldPixel < 128 ? 0 : 255;
-                        switch(colorSystem){
-                            case "gray":
-                                var newPixel = oldPixel < 128 ? 0 : 255;
-                                break;
-                            case "rgb"|| "hsi"|| "cym":
-                                var newPixel = oldPixel & makeBitMask(Bits);
-                                break;
-                        };    
+                        if (colorSystem == "gray"){
+                            var newPixel = oldPixel < 128 ? 0 : 255;
+                        }
+                        else{
+                            var newPixel = oldPixel & makeBitMask(Bits);
+                        };
                         outputData.data[index+ colorChannel] = newPixel;
                         var quantError = oldPixel - newPixel;
 
@@ -172,9 +170,9 @@
                             outputData.data[index + 3] = inputData.data[index + 3]; // Preserve alpha
                         }
                     }
-                    var redBits = parseInt($("#posterization-red-bits").val());
-                    var greenBits = parseInt($("#posterization-green-bits").val());
-                    var blueBits = parseInt($("#posterization-blue-bits").val());
+                    var redBits = parseInt($("#post-red-bits").val());
+                    var greenBits = parseInt($("#post-green-bits").val());
+                    var blueBits = parseInt($("#post-blue-bits").val());
                     console.log("Applying posterization with", redBits, "red bits,", greenBits, "green bits, and", blueBits, "blue bits.");
                     errorDiffusionDither(0, colorSystem, redBits);
                     errorDiffusionDither(1, colorSystem, greenBits);
@@ -182,22 +180,23 @@
                     break;
                 case "hsv":
                     //convert to HSI
+                    console.log("converting to hsv")
                     for (let y = 0; y < inputData.height; y++) {
                         for (let x = 0; x < inputData.width; x++) {
                             var index = (x + y * inputData.width) * 4;
                             var r = inputData.data[index];
                             var g = inputData.data[index + 1];
                             var b = inputData.data[index + 2];
-                            var hsi_value = imageproc.fromRGBToHSV(r, g, b);
-                            outputData.data[index + 1] = hsi_value.h;
-                            outputData.data[index + 2] = hsi_value.s;
-                            outputData.data[index + 3] = hsi_value.v;
+                            var hsv_value = imageproc.fromRGBToHSV2(r, g, b);
+                            outputData.data[index] = hsv_value.h;
+                            outputData.data[index + 1] = hsv_value.s;
+                            outputData.data[index + 2] = hsv_value.v;
                         }
                     }
                     //apply error diffusion
-                    var hBits = parseInt($("#posterization-h-bits").val());
-                    var sBits = parseInt($("#posterization-s-bits").val());
-                    var vBits = parseInt($("#posterization-v-bits").val());
+                    var hBits = parseInt($("#post-h-bits").val());
+                    var sBits = parseInt($("#post-s-bits").val());
+                    var vBits = parseInt($("#post-v-bits").val());
                     console.log("hBits:",hBits);
                     errorDiffusionDither(0, colorSystem, hBits);
                     errorDiffusionDither(1, colorSystem, sBits);
@@ -209,16 +208,58 @@
                             var h = outputData.data[index];
                             var s = outputData.data[index + 1];
                             var v = outputData.data[index + 2];
-                            var rgb_value = imageproc.fromRGBToHSV(h, s, v);
-                            outputData.data[index + 1] = rgb_value.r;
-                            outputData.data[index + 2] = rgb_value.g;
-                            outputData.data[index + 3] = rgb_value.b;
+                            var rgb_value = imageproc.fromHSVToRGB2(h, s, v);
+                            outputData.data[index] = rgb_value.r;
+                            outputData.data[index + 1] = rgb_value.g;
+                            outputData.data[index + 2] = rgb_value.b;
 
                         }
                     }
                     
                     break;
-                case "cym":
+                case "cmyk":
+                    //convert to CMYK
+                    console.log("converting to cmyk")
+                    var buffer = new Uint8ClampedArray(inputData.width * inputData.height * 4)
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var r = inputData.data[index];
+                            var g = inputData.data[index + 1];
+                            var b = inputData.data[index + 2];
+                            buffer[index + 3] = inputData.data[index + 3];
+                            var cmyk_value = imageproc.fromRGBToCMYK(r, g, b);
+                            outputData.data[index] = cmyk_value.c;
+                            outputData.data[index + 1] = cmyk_value.m;
+                            outputData.data[index + 2] = cmyk_value.y2;
+                            outputData.data[index + 3] = cmyk_value.k;
+                        }
+                    }
+                    //apply error diffusion
+                    var cBits = parseInt($("#post-c-bits").val());
+                    var mBits = parseInt($("#post-m-bits").val());
+                    var yBits = parseInt($("#post-y-bits").val());
+                    var kBits = parseInt($("#post-k-bits").val());
+                    console.log("hcits:",cBits);
+                    errorDiffusionDither(0, colorSystem, cBits);
+                    errorDiffusionDither(1, colorSystem, mBits);
+                    errorDiffusionDither(2, colorSystem, yBits);
+                    errorDiffusionDither(3, colorSystem, kBits);
+                    //convert back to RGB
+                    for (let y = 0; y < inputData.height; y++) {
+                        for (let x = 0; x < inputData.width; x++) {
+                            var index = (x + y * inputData.width) * 4;
+                            var c = outputData.data[index];
+                            var m = outputData.data[index + 1];
+                            var y2 = outputData.data[index + 2];
+                            var k = outputData.data[index + 3];
+                            var rgb_value = imageproc.fromCMYKToRGB(c, m, y2, k);
+                            outputData.data[index] = rgb_value.r;
+                            outputData.data[index + 1] = rgb_value.g;
+                            outputData.data[index + 2] = rgb_value.b;
+                            outputData.data[index + 3] = buffer[index + 3];
+                        }
+                    }
                     break;
                 default:
                     console.error("Fail to convert image into the targeted color channel")
