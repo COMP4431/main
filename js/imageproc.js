@@ -27,10 +27,27 @@
     imageproc.updateInputImage = function() {
         var image = new Image();
         image.onload = function () {
-            input.drawImage(image, 0, 0);
-        }
-        image.src = "images/" + imageSelector.val();
-    }
+            var canvas = $("#" + input.canvas.id)[0];
+            var ctx = canvas.getContext("2d");
+    
+            // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+            // Calculate the scaling factor to fit the image within the canvas
+            var scaleWidth = canvas.width / image.width;
+            var scaleHeight = canvas.height / image.height;
+            var scale = Math.min(scaleWidth, scaleHeight); // Use the smaller scale factor to ensure the entire image fits
+    
+            // Calculate the top left position to center the image
+            var x = (canvas.width / 2) - (image.width * scaleWidth / 2);
+            var y = (canvas.height / 2) - (image.height * scaleHeight / 2);
+    
+            // Draw the image scaled and centered
+            ctx.drawImage(image, x, y, image.width * scaleWidth, image.height * scaleHeight);
+        };
+        image.src = "images/" + imageSelector.val(); // Make sure the path is correct
+    };
+    
 
     // Initialize the magnifying glass on the output canvas
     imageproc.initMagnifier = function(outputCanvasId, outputImage) {
