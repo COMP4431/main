@@ -5,7 +5,7 @@
     var imageSelector;
 
     var magnifierRadius = 50;
-    var zoomFactor = 3;
+    var zoomFactor = 2;
     imageproc.operation = null;
 
     /*
