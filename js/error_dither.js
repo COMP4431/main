@@ -24,23 +24,7 @@
                     ];
                     divisor = 16;
                     break;
-                case "Jarvis":
-                    errorDiffusionMatrix = [
-                        [0, 0, 0, 7, 5],
-                        [3, 5, 7, 5, 3],
-                        [1, 3, 5, 3, 1]
-                    ];
-                    divisor = 48;
-                    break;
-                case "Judice":
-                    errorDiffusionMatrix = [
-                        [0, 0, 0, 7, 5],
-                        [3, 5, 7, 5, 3],
-                        [1, 3, 5, 3, 1]
-                    ];
-                    divisor = 48;
-                    break;
-                case "Ninke":
+                case "Jarvis-Judice-Ninke":
                     errorDiffusionMatrix = [
                         [0, 0, 0, 7, 5],
                         [3, 5, 7, 5, 3],

@@ -95,7 +95,7 @@
             case "error-dither":
                 if ($("#dither-input2").val() == "processed")
                     inputImage = processedImage;
-
+                
                 if ($('#color-channel').val() == "individualColor") {
                     var colorSystem = $("#color-system-selection").val();
                 } else {
