@@ -202,9 +202,11 @@ $(document).ready(function() {
     $('#dither-method').change(function() {
         if ($(this).val() == "Customized") {
             $('#custom-dither-controls').show();
+            $('#custom-dither-submit').show();
         } else {
             $('#custom-dither-controls').hide();
             $('#custom-dither-matrix').empty();
+            $('#custom-dither-submit').hide();
         }
     });
     // Update the click event handler for generating the custom matrix
@@ -233,7 +235,7 @@ $(document).ready(function() {
             customMatrix.push(rowValues); // Store row values in custom matrix
             container.append(row);
         }
-        $('#custom-dither-submit').show();
+       
     });
 
     // // Update the click event handler for generating the custom matrix
